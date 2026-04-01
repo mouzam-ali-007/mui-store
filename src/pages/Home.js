@@ -7,10 +7,10 @@ import { products } from "../data/products";
 
 const Home = () => {
     return (
-        <Container sx={{ mt: 5 }}>
+        <Container sx={{ mt: 15 }}>
             <Grid container spacing={3}>
                 {products.map((product) => (
-                    <Grid item key={product.id} xs={6} sm={6} md={4}>
+                    <Grid item key={product.id} xs={12} sm={12} md={2}>
                         <ProductCard product={product} />
                     </Grid>
                 ))}

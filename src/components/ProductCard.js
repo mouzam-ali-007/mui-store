@@ -13,13 +13,26 @@ import { Link } from "react-router-dom";
 const ProductCard = ({ product }) => {
     console.log("🚀 ~ ProductCard ~ product:", product)
     return (
-        <Card sx={{ maxWidth: 300, borderRadius: 3, boxShadow: 3 }}>
+        <Card sx={{
+            width: "100%", // full width on mobile
+            maxWidth: { xs: "100%", sm: 200, md: 350 }, // responsive sizes
+            borderRadius: 3,
+            boxShadow: 2,
+            mx: "auto" // center on larger screens
+        }}>
             <CardActionArea component={Link} to={`/product/${product.id}`}>
                 <CardMedia
                     component="img"
+                    width={"100"}
                     height="200"
                     image={product.image}
                     alt={product.title}
+
+                    sx={{
+                        width: "100%", // 👈 full width
+                        height: { xs: 160, sm: 300, md: 200 },
+                        objectFit: "cover"
+                    }}
                 />
 
                 <CardContent>
