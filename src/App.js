@@ -10,6 +10,7 @@ import Footer from "./components/Footer";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import SideBar from "./components/SideBar";
 import { Box } from "@mui/material";
+import CarousalComponent from "./components/carousal";
 
 function App() {
     // State for mobile drawer
@@ -24,7 +25,7 @@ function App() {
         {/* Main Content */}
         <Box sx={{ flexGrow: 1, p: 3 }} >
           <Routes>
-          <Route path="/" element={<Home />} />
+          <Route path="/" element={<CarousalComponent />} />
         <Route path="/product/:id" element={<ProductDetailsPage />} />
           </Routes>
       
