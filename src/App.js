@@ -13,24 +13,24 @@ import { Box } from "@mui/material";
 import CarousalComponent from "./components/carousal";
 
 function App() {
-    // State for mobile drawer
+  // State for mobile drawer
   const [mobileOpen, setMobileOpen] = useState(false)
   return (
     <BrowserRouter>
       <Navbar setMobileOpen={setMobileOpen} />
 
-        <Box sx={{ display: "flex" }} >
-       <SideBar mobileOpen={mobileOpen} setMobileOpen={setMobileOpen} />
+      <Box sx={{ display: "flex" }} >
+        <SideBar mobileOpen={mobileOpen} setMobileOpen={setMobileOpen} />
 
         {/* Main Content */}
         <Box sx={{ flexGrow: 1, p: 3 }} >
           <Routes>
-          <Route path="/" element={<CarousalComponent />} />
-        <Route path="/product/:id" element={<ProductDetailsPage />} />
+            <Route path="/" element={<CarousalComponent />} />
+            <Route path="/product/:id" element={<ProductDetailsPage />} />
           </Routes>
-      
 
-        <Footer />
+
+          {/* <Footer /> */}
         </Box>
       </Box>
 
