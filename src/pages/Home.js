@@ -26,7 +26,7 @@ const Home = () => {
 
             <Grid container spacing={3}>
                 {savedProducts.map((product) => (
-                    <Grid item key={product.id} xs={12} sm={12} md={2}>
+                    <Grid item key={product.id} xs={6} sm={6} md={3} lg={2}>
                         <ProductCard product={product} />
                     </Grid>
                 ))}

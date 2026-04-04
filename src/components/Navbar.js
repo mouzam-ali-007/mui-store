@@ -82,7 +82,7 @@ const Navbar = ({ setMobileOpen }) => {
             </IconButton>
           )}
           <Typography variant="h6" fontWeight="bold">
-            LoomPK
+            Looma.PK
           </Typography>
         </Box>
 

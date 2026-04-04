@@ -39,7 +39,17 @@ const ProductCard = ({ product }) => {
                 />
 
                 <CardContent>
-                    <Typography variant="h6">{product.name}</Typography>
+                    <Typography variant="h6"
+                        component="div"
+                        sx={{
+                            display: "-webkit-box",
+                            WebkitLineClamp: 2,
+                            WebkitBoxOrient: "vertical",
+                            overflow: "hidden",
+                            textOverflow: "ellipsis",
+                            wordBreak: "break-word",
+                        }}
+                    >{product.name}</Typography>
                     <Typography color="text.secondary">
                         PKR {product.price}
                     </Typography>
