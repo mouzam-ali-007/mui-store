@@ -82,19 +82,19 @@ const Navbar = ({ setMobileOpen }) => {
             </IconButton>
           )}
           <Typography variant="h6" fontWeight="bold">
-            Farhan Store
+            Store
           </Typography>
         </Box>
 
         {/* SEARCH */}
         {isMobile ? searchBar : null}
 
-       
+
 
         {/* DESKTOP: show search bar */}
         {!isMobile && searchBar}
 
-         {/* RIGHT: Deliver / Cart */}
+        {/* RIGHT: Deliver / Cart */}
         <Box display="flex" alignItems="center" gap={3}>
           <Box onClick={handleOpen} sx={{ cursor: "pointer", textAlign: "right" }}>
             <Typography variant="caption" color="gray">
@@ -129,9 +129,9 @@ const Navbar = ({ setMobileOpen }) => {
             </Select>
           </Menu>
 
-        <IconButton onClick={() => setBagOpen(true)}>
-  <ShoppingBagOutlinedIcon />
-</IconButton>
+          <IconButton onClick={() => setBagOpen(true)}>
+            <ShoppingBagOutlinedIcon />
+          </IconButton>
 
           <ShoppingBag bagOpen={bagOpen} setBagOpen={setBagOpen} />
 

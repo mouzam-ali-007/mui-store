@@ -4,13 +4,16 @@ import Navbar from "./components/Navbar";
 import Home from "./pages/Home";
 import About from "./pages/About";
 import Contact from "./pages/Contact";
-import ProductDetailsPage from "./pages/ProductDetailsPage";
+import ProductDetailsPage from "./components/ProductDetailsPage";
 import Footer from "./components/Footer";
 
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import SideBar from "./components/SideBar";
 import { Box } from "@mui/material";
 import CarousalComponent from "./components/carousal";
+import ProductCard from "./components/ProductCard";
+import AddProduct from "./components/AddProduct";
+import FilterProduct from "./components/FilterProduct";
 
 function App() {
   // State for mobile drawer
@@ -24,12 +27,17 @@ function App() {
 
         {/* Main Content */}
         <Box sx={{ flexGrow: 1, p: 3 }} >
+
           <Routes>
             <Route path="/" element={<CarousalComponent />} />
+
             <Route path="/product/:id" element={<ProductDetailsPage />} />
+
+            <Route path="/addProduct" element={<AddProduct />} />
+
           </Routes>
-
-
+          <FilterProduct />
+          <Home />
           {/* <Footer /> */}
         </Box>
       </Box>

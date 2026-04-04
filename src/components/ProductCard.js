@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
     Card,
     CardMedia,
@@ -10,8 +10,11 @@ import {
 } from "@mui/material";
 import { Link } from "react-router-dom";
 
+import { addProduct } from '../services/data.service';
+
 const ProductCard = ({ product }) => {
-    console.log("🚀 ~ ProductCard ~ product:", product)
+
+
     return (
         <Card sx={{
             width: "100%", // full width on mobile
@@ -26,7 +29,7 @@ const ProductCard = ({ product }) => {
                     width={"100"}
                     height="200"
                     image={product.image}
-                    alt={product.title}
+                    alt={product.name}
 
                     sx={{
                         width: "100%", // 👈 full width
@@ -36,7 +39,7 @@ const ProductCard = ({ product }) => {
                 />
 
                 <CardContent>
-                    <Typography variant="h6">{product.title}</Typography>
+                    <Typography variant="h6">{product.name}</Typography>
                     <Typography color="text.secondary">
                         PKR {product.price}
                     </Typography>

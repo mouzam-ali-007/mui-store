@@ -1,0 +1,150 @@
+import { createClient } from '@supabase/supabase-js'
+
+
+let url = 'https://hrjxxzzumohxrhrmflxk.supabase.co'
+
+let anon_key = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imhyanh4enp1bW9oeHJocm1mbHhrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUyNjgwNzcsImV4cCI6MjA5MDg0NDA3N30.0Gw8I2hVgMQmfHSoCw057WkOz4JslLdS1ZmxsuVyT38'
+
+
+const supabase = createClient(url, anon_key)
+
+
+// User sign-in
+export async function signIn() {
+    let email = "mouzam.ali@dubizzlelabs.com";
+    let password = "@wadizaha2026"
+    const { data, error } = await supabase.auth.signInWithPassword({ email, password })
+    if (error) throw error
+    return data.user
+}
+
+// User sign-out
+export async function signOut() {
+    const { error } = await supabase.auth.signOut()
+    if (error) throw error
+}
+
+export async function addProduct(product) {
+    console.log("🚀 ~ addProduct ~ product:", product)
+
+
+
+    // Get current session
+    const session = await supabase.auth.getSession() // returns a Promise
+    const user = session?.data?.session
+    console.log("🚀 ~ addProduct ~ user:", user)
+
+    //const imageUrl = await uploadImageFromPath(product.image)
+
+
+    const { data, error } = await supabase
+        .from('product')
+        .insert([
+            {
+                name: product.name,
+                price: product.price,
+                description: product.description,
+                image: 'https://hrjxxzzumohxrhrmflxk.supabase.co/storage/v1/object/public/uploadImages/public/speakers.jpg',
+            }
+        ]).select()
+
+    if (error) {
+        console.error(error)
+    } else {
+        console.log(data)
+        return data
+    }
+}
+
+export async function getProducts() {
+    const { data, error } = await supabase
+        .from('product')
+        .select('*')
+        .order('created_at', { ascending: false }) // latest first
+
+    if (error) {
+        console.error("Error fetching products:", error);
+        return null;
+    }
+
+    return data;
+}
+
+export async function getProductById(id) {
+    const { data, error } = await supabase
+        .from("product")
+        .select("*")
+        .eq("id", id)   // filter by ID
+        .single();      // return a single object instead of an array
+
+    if (error) {
+        console.error("Error fetching product:", error);
+        return null;
+    }
+
+    return data;
+}
+
+async function getFileFromPath(imagePath) {
+    const response = await fetch(imagePath)
+    const blob = await response.blob()
+
+    const file = new File([blob], "product.jpg", {
+        type: blob.type
+    })
+
+    return file
+}
+
+
+async function uploadImageFromPath(imagePath) {
+    const file = await getFileFromPath(imagePath)
+    console.log("🚀 ~ uploadImageFromPath ~ file:", file)
+
+    const fileName = `${Date.now()}-product.jpg`
+
+    const { data, error } = await supabase.storage
+        .from('uploadImages')
+
+        .upload(fileName, file, {
+
+            upsert: false
+        })
+
+    if (data) {
+        //   getMedia();
+
+    } else {
+        console.log(error);
+        return null
+    }
+
+
+
+
+    const { data: publicUrl } = supabase.storage
+    console.log("🚀 ~ uploadImageFromPath ~ data:", data)
+        .from('products')
+        .getPublicUrl(fileName)
+
+    return publicUrl.publicUrl
+}
+
+
+// async function getMedia() {
+
+//     const { data, error } = await supabase.storage.from('uploads').list(userId + '/', {
+//         limit: 10,
+//         offset: 0,
+//         sortBy: {
+//             column: 'name', order:
+//                 'asc'
+//         }
+//     });
+
+//     if (data) {
+//         setMedia(data);
+//     } else {
+//         console.log(71, error);
+//     }
+// }
