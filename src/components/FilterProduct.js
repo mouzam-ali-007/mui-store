@@ -316,13 +316,6 @@ const FilterProduct = () => {
                     <MenuItem onClick={() => handleSelect("Adidas")}>Adidas</MenuItem>
                 </Menu>
 
-
-
-
-
-
-
-
                 {/* Active Filter Chips */}
                 {category && (
                     <Chip

@@ -15,6 +15,14 @@ import ProductCard from "./components/ProductCard";
 import AddProduct from "./components/AddProduct";
 import FilterProduct from "./components/FilterProduct";
 
+const HomePage = () => (
+  <>
+    <CarousalComponent />
+    <FilterProduct />
+    <Home />
+  </>
+);
+
 function App() {
   // State for mobile drawer
   const [mobileOpen, setMobileOpen] = useState(false)
@@ -29,15 +37,22 @@ function App() {
         <Box sx={{ flexGrow: 1, p: 3, overflow: "hidden" }} >
 
           <Routes>
-            <Route path="/" element={<CarousalComponent />} />
+            {/* HOME PAGE */}
+            <Route
+              path="/"
+              element={
+                <>
+                  <HomePage />
+                </>
+              }
+            />
 
             <Route path="/product/:id" element={<ProductDetailsPage />} />
 
             <Route path="/addProduct" element={<AddProduct />} />
 
           </Routes>
-          <FilterProduct />
-          <Home />
+
           {/* <Footer /> */}
         </Box>
       </Box>

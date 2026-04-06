@@ -1,66 +1,156 @@
-import React, { useEffect } from "react";
+import React, { useState } from "react";
 import {
     Card,
     CardMedia,
     CardContent,
     Typography,
-    CardActions,
-    Button,
-    CardActionArea,
+    IconButton,
+    Box,
+    Chip,
 } from "@mui/material";
+import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
+import ShoppingBagOutlinedIcon from "@mui/icons-material/ShoppingBagOutlined";
 import { Link } from "react-router-dom";
-
-import { addProduct } from '../services/data.service';
+import ProductModal from "./ProductModal";
+import { useNavigate } from "react-router-dom";
 
 const ProductCard = ({ product }) => {
 
+    // inside component
+    const [open, setOpen] = useState(false);
+
+    const handleOpen = () => setOpen(true);
+    const handleClose = () => setOpen(false);
+
+    const navigate = useNavigate();
+
 
     return (
-        <Card sx={{
-            width: "100%", // full width on mobile
-            maxWidth: { xs: "100%", sm: 200, md: 350 }, // responsive sizes
-            borderRadius: 3,
-            boxShadow: 2,
-            mx: "auto" // center on larger screens
-        }}>
-            <CardActionArea component={Link} to={`/product/${product.id}`}>
+        <Card
+            sx={{
+                borderRadius: 3,
+                overflow: "hidden",
+                boxShadow: 1,
+                position: "relative",
+            }}
+        >
+            {/* IMAGE SECTION */}
+            <Box sx={{ position: "relative" }}>
                 <CardMedia
                     component="img"
-                    width={"100"}
-                    height="200"
                     image={product.image}
                     alt={product.name}
-
+                    onClick={() => navigate(`/product/${product.id}`)}
                     sx={{
-                        width: "100%", // 👈 full width
-                        height: { xs: 160, sm: 300, md: 200 },
-                        objectFit: "cover"
+                        width: "100%",
+                        height: 300,
+                        objectFit: "cover",
                     }}
                 />
 
-                <CardContent>
-                    <Typography variant="h6"
-                        component="div"
+                {/* Discount Badge */}
+                {product.discount && (
+                    <Box
                         sx={{
-                            display: "-webkit-box",
-                            WebkitLineClamp: 2,
-                            WebkitBoxOrient: "vertical",
-                            overflow: "hidden",
-                            textOverflow: "ellipsis",
-                            wordBreak: "break-word",
+                            position: "absolute",
+                            top: 10,
+                            left: 10,
+                            bgcolor: "red",
+                            color: "#fff",
+                            px: 1.2,
+                            py: 0.5,
+                            borderRadius: 1,
+                            fontSize: 12,
+                            fontWeight: 600,
                         }}
-                    >{product.name}</Typography>
-                    <Typography color="text.secondary">
-                        PKR {product.price}
-                    </Typography>
-                </CardContent>
-            </CardActionArea>
+                    >
+                        -{product.discount}%
+                    </Box>
+                )}
 
-            <CardActions>
-                <Button size="small" variant="contained">
-                    Add to Cart
-                </Button>
-            </CardActions>
+                {/* Wishlist Icon */}
+                <IconButton
+
+                    sx={{
+                        position: "absolute",
+                        top: 10,
+                        right: 10,
+                        bgcolor: "#fff",
+                    }}
+                >
+                    <FavoriteBorderIcon />
+                </IconButton>
+
+            </Box>
+
+            {/* CONTENT */}
+            <CardContent sx={{ p: 1.5 }}>
+                {/* Price */}
+                <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                    <Typography sx={{ color: "red", fontWeight: 700 }}>
+                        ${product.price}
+                    </Typography>
+
+                    {product.oldPrice && (
+                        <Typography
+                            sx={{
+                                textDecoration: "line-through",
+                                color: "gray",
+                                fontSize: 14,
+                            }}
+                        >
+                            ${product.oldPrice}
+                        </Typography>
+                    )}
+                </Box>
+
+                {/* Title */}
+                <Typography
+                    sx={{
+                        fontSize: 14,
+                        mt: 0.5,
+                        color: "#555",
+                    }}
+                >
+                    {product.brand} • {product.name}
+                </Typography>
+
+                {/* Tags */}
+                <Box sx={{ mt: 1, display: "flex", gap: 1 }}>
+                    {product.express && (
+                        <Chip
+                            label="Express"
+                            size="small"
+                            sx={{ bgcolor: "#1976d2", color: "#fff", fontSize: 12 }}
+                        />
+                    )}
+
+                    {product.rating && (
+                        <Chip
+                            label={`⭐ ${product.rating}`}
+                            size="small"
+                            sx={{ fontSize: 12 }}
+                        />
+                    )}
+                </Box>
+            </CardContent>
+
+            {/* Add to Cart Button */}
+            <IconButton
+                onClick={handleOpen}
+                sx={{
+                    position: "absolute",
+                    bottom: 10,
+                    right: 10,
+                    bgcolor: "#fff",
+                    boxShadow: 1,
+                }}
+            >
+                <ShoppingBagOutlinedIcon />
+            </IconButton>
+
+            <ProductModal open={open} handleClose={handleClose} product={product} />
+
         </Card>
     );
 };

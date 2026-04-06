@@ -36,7 +36,7 @@ export async function addProduct(product) {
 
     //const imageUrl = await uploadImageFromPath(product.image)
 
-
+    let imageUrl = "https://hrjxxzzumohxrhrmflxk.supabase.co/storage/v1/object/public/products/ladies_bag.webp"
     const { data, error } = await supabase
         .from('product')
         .insert([
@@ -44,7 +44,8 @@ export async function addProduct(product) {
                 name: product.name,
                 price: product.price,
                 description: product.description,
-                image: 'https://hrjxxzzumohxrhrmflxk.supabase.co/storage/v1/object/public/uploadImages/public/speakers.jpg',
+                image: imageUrl, // use uploaded image URL
+
             }
         ]).select()
 

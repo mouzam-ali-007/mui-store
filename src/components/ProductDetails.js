@@ -1,90 +1,178 @@
-import React from "react";
-import { Grid, Typography, Button, Box, Paper } from "@mui/material";
-import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
-import LocalShippingIcon from "@mui/icons-material/LocalShipping";
-import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+import React, { useState } from "react";
+import {
+  Box,
+  Grid,
+  Typography,
+  Button,
+  Paper,
+  IconButton,
+  Divider,
+} from "@mui/material";
+import AddIcon from "@mui/icons-material/Add";
+import RemoveIcon from "@mui/icons-material/Remove";
 
 const ProductDetails = ({ product }) => {
+  const [selectedImage, setSelectedImage] = useState(
+    product?.images?.[0] || product?.image
+  );
+  const [selectedSize, setSelectedSize] = useState(null);
+  const [qty, setQty] = useState(1);
+
   if (!product) return <Typography>Product not found.</Typography>;
 
   return (
-    <Paper elevation={3} sx={{ p: { xs: 2, md: 5 }, mt: 4, borderRadius: 3 }}>
+    <Box sx={{ p: { xs: 2, md: 4 } }}>
       <Grid container spacing={4}>
-        {/* Product Image Section */}
+
+        {/* LEFT IMAGE SECTION */}
         <Grid item xs={12} md={6}>
-          <Box
-            sx={{
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              bgcolor: "#f9f9f9",
-              borderRadius: 3,
-              p: 2,
-              height: "100%",
-              minHeight: 300,
-            }}
-          >
-            <img
-              src={product.image}
-              alt={product.title}
-              style={{
-                maxWidth: "100%",
-                maxHeight: 400,
-                objectFit: "contain",
-                borderRadius: "10px",
-              }}
-            />
+          <Box sx={{ display: "flex", gap: 2 }}>
+
+            {/* Thumbnails */}
+            <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
+              {(product.images || [product.image]).map((img, i) => (
+                <img
+                  key={i}
+                  src={img}
+                  alt=""
+                  onClick={() => setSelectedImage(img)}
+                  style={{
+                    width: 60,
+                    height: 80,
+                    objectFit: "cover",
+                    cursor: "pointer",
+                    border:
+                      selectedImage === img
+                        ? "2px solid black"
+                        : "1px solid #ddd",
+                    borderRadius: 6,
+                  }}
+                />
+              ))}
+            </Box>
+
+            {/* Main Image */}
+            <Box sx={{ flex: 1 }}>
+              <img
+                src={product.image}
+                alt={product.name}
+                style={{
+                  width: "100%",
+                  height: "500px",
+                  objectFit: "cover",
+                  borderRadius: "10px",
+                }}
+              />
+            </Box>
           </Box>
         </Grid>
 
-        {/* Product Info Section */}
+        {/* RIGHT CONTENT */}
         <Grid item xs={12} md={6}>
-          <Typography variant="h4" fontWeight="bold" gutterBottom>
-            {product.title}
+
+          {/* Brand + Name */}
+          <Typography variant="h6" fontWeight={600}>
+            {product.brand || "Brand"}
           </Typography>
 
-          <Typography variant="h5" color="primary" fontWeight="bold" gutterBottom>
-            PKR {product.price}
+          <Typography variant="body1" color="text.secondary">
+            {product.name}
           </Typography>
 
-          {/* Description */}
-          <Typography variant="body1" color="text.secondary" paragraph sx={{ mt: 2 }}>
-            {product.description || "No description available for this product."}
-          </Typography>
+          {/* Price */}
+          <Box sx={{ mt: 2 }}>
+            <Typography variant="h5" fontWeight={700}>
+              ${product.price}
+            </Typography>
 
-          {/* Features / Highlights */}
-          <Box sx={{ mt: 3, mb: 4 }}>
-             <Typography variant="body2" sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
-                 <CheckCircleIcon color="success" sx={{ mr: 1, fontSize: 20 }} /> In Stock and ready to ship
-             </Typography>
-             <Typography variant="body2" sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
-                 <LocalShippingIcon color="action" sx={{ mr: 1, fontSize: 20 }} /> Free shipping over PKR 500
-             </Typography>
+            <Box sx={{ display: "flex", gap: 1 }}>
+              {product.oldPrice && (
+                <Typography sx={{ textDecoration: "line-through", color: "gray" }}>
+                  ${product.oldPrice}
+                </Typography>
+              )}
+              {product.discount && (
+                <Typography color="error">-{product.discount}%</Typography>
+              )}
+            </Box>
           </Box>
 
-          {/* Actions */}
-          <Box sx={{ display: "flex", gap: 2, flexWrap: "wrap", mt: 4 }}>
+          {/* Rating */}
+          <Typography sx={{ mt: 1 }}>
+            ⭐ {product.rating || 4.0} ({product.reviews || 50} reviews)
+          </Typography>
+
+          {/* Express Box */}
+          <Paper sx={{ p: 2, mt: 2 }}>
+            <Typography sx={{ color: "#1976d2", fontWeight: 600 }}>
+              ⚡ Express — Instant dispatch
+            </Typography>
+            <Typography variant="body2" color="text.secondary">
+              Est. delivery in 3-5 days
+            </Typography>
+          </Paper>
+
+          <Divider sx={{ my: 3 }} />
+
+          {/* SIZE */}
+          <Typography fontWeight={600}>Size</Typography>
+          <Box sx={{ display: "flex", gap: 1, mt: 1 }}>
+            {(product.sizes || ["S", "M", "L", "XL"]).map((size) => (
+              <Box
+                key={size}
+                onClick={() => setSelectedSize(size)}
+                sx={{
+                  px: 2,
+                  py: 1,
+                  border: "1px solid #ccc",
+                  borderRadius: 1,
+                  cursor: "pointer",
+                  bgcolor: selectedSize === size ? "black" : "#fff",
+                  color: selectedSize === size ? "#fff" : "#000",
+                }}
+              >
+                {size}
+              </Box>
+            ))}
+          </Box>
+
+          {/* Quantity */}
+          <Box sx={{ mt: 3 }}>
+            <Typography fontWeight={600}>Quantity</Typography>
+
+            <Box sx={{ display: "flex", alignItems: "center", gap: 2, mt: 1 }}>
+              <IconButton onClick={() => setQty(Math.max(1, qty - 1))}>
+                <RemoveIcon />
+              </IconButton>
+
+              <Typography>{qty}</Typography>
+
+              <IconButton onClick={() => setQty(qty + 1)}>
+                <AddIcon />
+              </IconButton>
+            </Box>
+          </Box>
+
+          {/* Buttons */}
+          <Box sx={{ mt: 4, display: "flex", flexDirection: "column", gap: 2 }}>
             <Button
               variant="contained"
-              size="large"
-              color="primary"
-              startIcon={<ShoppingCartIcon />}
-              sx={{ px: 4, py: 1.5, fontWeight: "bold" }}
+              sx={{
+                bgcolor: "black",
+                "&:hover": { bgcolor: "#333" },
+                py: 1.5,
+              }}
             >
-              Add to Cart
+              Add To Bag
             </Button>
-            <Button
-              variant="outlined"
-              size="large"
-              color="primary"
-              sx={{ px: 4, py: 1.5, fontWeight: "bold" }}
-            >
+
+            <Button variant="outlined" sx={{ py: 1.5 }}>
               Buy Now
             </Button>
           </Box>
         </Grid>
       </Grid>
-    </Paper>
+    </Box>
   );
 };
 
