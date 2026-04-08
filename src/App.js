@@ -28,7 +28,7 @@ const HomePage = () => (
 function App() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [user, setUser] = useState(null);
-  console.log("🚀 ~ App ~ user:", user)
+
 
   // Check session on mount
   useEffect(() => {
@@ -42,10 +42,10 @@ function App() {
     const { data: authListener } = supabase.auth.onAuthStateChange((_event, session) => {
       if (session?.user) {
         setUser(session.user);
-        sessionStorage.setItem("user", JSON.stringify(session.user));
+        //  sessionStorage.setItem("user", JSON.stringify(session.user));
       } else {
         setUser(null);
-        sessionStorage.removeItem("user");
+        //  sessionStorage.removeItem("user");
       }
     });
 

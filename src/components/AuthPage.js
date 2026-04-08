@@ -21,6 +21,7 @@ const AuthPage = () => {
 
                     if (data.user) {
                         setMessage("Logged in successfully!");
+                        sessionStorage.setItem("user", JSON.stringify(data.user));
                         navigate("/");
                     } else {
                         setMessage("Some thing went wrong!");
@@ -36,6 +37,7 @@ const AuthPage = () => {
                     if (data.user) {
                         setMessage("Sign up successful! Check your email to confirm.");
                         navigate("/");
+                        sessionStorage.setItem("user", JSON.stringify(data.user));
                     } else {
                         setMessage("Some thing went wrong!");
                     }

@@ -23,7 +23,7 @@ const ProductModal = ({ open, handleClose, product }) => {
     // useEffect to load user on mount
     useEffect(() => {
         const storedUser = sessionStorage.getItem("user");
-        console.log("🚀 ~ ProductModal ~ storedUser:", storedUser)
+
         if (storedUser) {
             setUser(JSON.parse(storedUser));
         }
@@ -40,7 +40,7 @@ const ProductModal = ({ open, handleClose, product }) => {
             navigate("/auth");
             return;
         }
-        console.log("Added to cart");
+
     };
 
     return (
