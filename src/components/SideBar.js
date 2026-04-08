@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Drawer,
   List,
@@ -10,15 +10,53 @@ import {
 } from "@mui/material";
 import ExpandLess from "@mui/icons-material/ExpandLess";
 import ExpandMore from "@mui/icons-material/ExpandMore";
+import { signOut } from "../services/data.service";
+import { useNavigate } from "react-router-dom";
+
+import { createClient } from '@supabase/supabase-js'
+
+
+let url = 'https://hrjxxzzumohxrhrmflxk.supabase.co'
+
+let anon_key = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imhyanh4enp1bW9oeHJocm1mbHhrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUyNjgwNzcsImV4cCI6MjA5MDg0NDA3N30.0Gw8I2hVgMQmfHSoCw057WkOz4JslLdS1ZmxsuVyT38'
+
+
+export const supabase = createClient(url, anon_key)
 
 const SideBar = ({ mobileOpen, setMobileOpen }) => {
   const [openWomen, setOpenWomen] = useState(true);
+  const [user, setUser] = useState(true);
+
+
+  const navigate = useNavigate();
 
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
 
   const handleWomenClick = () => {
     setOpenWomen(!openWomen);
+  };
+
+  useEffect(() => {
+
+
+
+    const getSession = async () => {
+      const { data } = await supabase.auth.getSession();
+      setUser(data?.session);
+    };
+
+    getSession();
+
+  }, [user]);
+
+  const handleLogout = async () => {
+    const res = signOut();
+
+    if (res) {
+      navigate("/");
+    }
+
   };
 
   const drawerContent = (
@@ -67,6 +105,18 @@ const SideBar = ({ mobileOpen, setMobileOpen }) => {
           </ListItemButton>
         </List>
       </Collapse>
+
+      {user && <ListItemButton
+        onClick={handleLogout}
+        sx={{
+          mt: 3,
+          borderTop: "1px solid #eee",
+          color: "red",
+          borderRadius: "8px"
+        }}
+      >
+        <ListItemText primary="Sign Out" />
+      </ListItemButton>}
     </List>
   );
 

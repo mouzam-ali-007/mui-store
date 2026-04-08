@@ -10,15 +10,26 @@ import {
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import RemoveIcon from "@mui/icons-material/Remove";
+import { useNavigate } from "react-router-dom";
 
-const ProductDetails = ({ product }) => {
+
+const ProductDetails = ({ product, user }) => {
   const [selectedImage, setSelectedImage] = useState(
     product?.images?.[0] || product?.image
   );
   const [selectedSize, setSelectedSize] = useState(null);
   const [qty, setQty] = useState(1);
+  const navigate = useNavigate();
 
   if (!product) return <Typography>Product not found.</Typography>;
+
+  const handleAddToCart = () => {
+    if (!user) {
+      navigate("/auth");
+      return;
+    }
+    console.log("Added to cart");
+  };
 
   return (
     <Box sx={{ p: { xs: 2, md: 4 } }}>
@@ -156,6 +167,7 @@ const ProductDetails = ({ product }) => {
           {/* Buttons */}
           <Box sx={{ mt: 4, display: "flex", flexDirection: "column", gap: 2 }}>
             <Button
+              onClick={handleAddToCart}
               variant="contained"
               sx={{
                 bgcolor: "black",

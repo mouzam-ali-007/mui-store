@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { signUpWithEmail, loginWithEmail, loginWithPhone } from "./../services/data.service";
-import { Box, TextField, Button, Typography, ToggleButton, ToggleButtonGroup } from "@mui/material";
+import { Box, TextField, Button, Typography, ToggleButton, ToggleButtonGroup, Paper } from "@mui/material";
+import { useNavigate } from "react-router-dom";
 
 const AuthPage = () => {
     const [isLogin, setIsLogin] = useState(true);
@@ -9,21 +10,36 @@ const AuthPage = () => {
     const [phone, setPhone] = useState("");
     const [password, setPassword] = useState("");
     const [message, setMessage] = useState("");
+    const navigate = useNavigate();
 
     const handleAuth = async () => {
+        let data;
         try {
             if (isLogin) {
                 if (authType === "email") {
-                    await loginWithEmail(email, password);
-                    setMessage("Logged in successfully!");
+                    data = await loginWithEmail(email, password);
+
+                    if (data.user) {
+                        setMessage("Logged in successfully!");
+                        navigate("/");
+                    } else {
+                        setMessage("Some thing went wrong!");
+                    }
+
                 } else {
                     await loginWithPhone(phone);
                     setMessage("OTP sent to your phone!");
                 }
             } else {
                 if (authType === "email") {
-                    await signUpWithEmail(email, password);
-                    setMessage("Sign up successful! Check your email to confirm.");
+                    data = await signUpWithEmail(email, password);
+                    if (data.user) {
+                        setMessage("Sign up successful! Check your email to confirm.");
+                        navigate("/");
+                    } else {
+                        setMessage("Some thing went wrong!");
+                    }
+
                 } else {
                     await loginWithPhone(phone);
                     setMessage("OTP sent for sign up!");
@@ -35,62 +51,94 @@ const AuthPage = () => {
     };
 
     return (
-        <Box sx={{ maxWidth: 400, margin: "50px auto", textAlign: "center", padding: 3, boxShadow: 3, borderRadius: 2 }}>
-            <Typography variant="h5" mb={2}>{isLogin ? "Login" : "Sign Up"}</Typography>
 
-            <ToggleButtonGroup
-                value={authType}
-                exclusive
-                onChange={(e, val) => val && setAuthType(val)}
-                sx={{ mb: 2 }}
+
+        <Box
+            sx={{
+                minHeight: "100vh",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                background: "linear-gradient(135deg,rgb(164, 189, 240),rgb(220, 198, 242))",
+                px: 2,
+            }}
+        >
+            <Paper
+                elevation={6}
+                sx={{
+                    width: "100%",
+                    maxWidth: 400,
+                    p: { xs: 3, sm: 4 },
+                    borderRadius: 3,
+                    textAlign: "center",
+                }}
             >
-                <ToggleButton value="email">Email</ToggleButton>
-                <ToggleButton value="phone">Phone</ToggleButton>
-            </ToggleButtonGroup>
+                {/* Title */}
+                <Typography variant="h4" fontWeight="bold" mb={1}>
+                    {isLogin ? "Welcome Back" : "Create Account"}
+                </Typography>
 
-            {authType === "email" ? (
-                <>
-                    <TextField
-                        label="Email"
-                        variant="outlined"
-                        fullWidth
-                        sx={{ mb: 2 }}
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                    />
-                    <TextField
-                        label="Password"
-                        type="password"
-                        variant="outlined"
-                        fullWidth
-                        sx={{ mb: 2 }}
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                    />
-                </>
-            ) : (
+                <Typography variant="body2" color="text.secondary" mb={3}>
+                    {isLogin
+                        ? "Login to continue"
+                        : "Sign up to get started"}
+                </Typography>
+
+                {/* Email Inputs */}
                 <TextField
-                    label="Phone (+1234567890)"
-                    variant="outlined"
+                    label="Email"
                     fullWidth
+                    size="medium"
                     sx={{ mb: 2 }}
-                    value={phone}
-                    onChange={(e) => setPhone(e.target.value)}
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
                 />
-            )}
 
-            <Button variant="contained" fullWidth onClick={handleAuth} sx={{ mb: 2 }}>
-                {isLogin ? "Login" : "Sign Up"}
-            </Button>
+                <TextField
+                    label="Password"
+                    type="password"
+                    fullWidth
+                    sx={{ mb: 3 }}
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                />
 
-            <Typography
-                sx={{ cursor: "pointer", color: "blue" }}
-                onClick={() => setIsLogin(!isLogin)}
-            >
-                {isLogin ? "Don't have an account? Sign Up" : "Already have an account? Login"}
-            </Typography>
+                {/* Button */}
+                <Button
+                    variant="contained"
+                    fullWidth
+                    size="large"
+                    onClick={handleAuth}
+                    sx={{
+                        py: 1.3,
+                        borderRadius: 2,
+                        textTransform: "none",
+                        fontWeight: "bold",
+                        fontSize: "16px",
+                        background: "linear-gradient(135deg, #667eea,rgb(219, 205, 233))",
+                    }}
+                >
+                    {isLogin ? "Login" : "Sign Up"}
+                </Button>
 
-            {message && <Typography mt={2}>{message}</Typography>}
+                {/* Switch */}
+                <Typography
+                    mt={3}
+                    sx={{ cursor: "pointer", fontSize: "14px" }}
+                    onClick={() => setIsLogin(!isLogin)}
+                >
+                    {isLogin
+                        ? "Don't have an account? Sign Up"
+                        : "Already have an account? Login"}
+                </Typography>
+
+                {/* Message */}
+                {message && (
+                    <Typography mt={2} color="error">
+                        {message}
+                    </Typography>
+                )}
+            </Paper>
         </Box>
     );
 };

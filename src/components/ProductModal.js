@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
     Dialog,
     Box,
@@ -6,19 +6,65 @@ import {
     IconButton,
     Button,
     Divider,
+    useTheme,
+    useMediaQuery,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
-import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
+import { useNavigate } from "react-router-dom";
 
 const ProductModal = ({ open, handleClose, product }) => {
+
+    const navigate = useNavigate();
+
+    const theme = useTheme();
+    const [user, setUser] = useState(null);
+    const isMobile = useMediaQuery(theme.breakpoints.down("md"));
+
+    // useEffect to load user on mount
+    useEffect(() => {
+        const storedUser = sessionStorage.getItem("user");
+        console.log("🚀 ~ ProductModal ~ storedUser:", storedUser)
+        if (storedUser) {
+            setUser(JSON.parse(storedUser));
+        }
+    }, []); // empty dependency array means it runs once on mount
+
+
+
     if (!product) return null;
 
-    return (
-        <Dialog open={open} onClose={handleClose} maxWidth="lg" fullWidth>
-            <Box sx={{ display: "flex", height: "80vh" }}>
 
-                {/* LEFT IMAGE */}
-                <Box sx={{ flex: 1 }}>
+
+    const handleAddToCart = () => {
+        if (!user) {
+            navigate("/auth");
+            return;
+        }
+        console.log("Added to cart");
+    };
+
+    return (
+        <Dialog
+            open={open}
+            onClose={handleClose}
+            maxWidth="lg"
+            fullWidth
+            fullScreen={isMobile}
+        >
+            <Box
+                sx={{
+                    display: "flex",
+                    flexDirection: isMobile ? "column" : "row",
+                    height: isMobile ? "auto" : "80vh",
+                }}
+            >
+                {/* IMAGE */}
+                <Box
+                    sx={{
+                        flex: 1,
+                        height: isMobile ? "300px" : "100%",
+                    }}
+                >
                     <img
                         src={product.image}
                         alt={product.name}
@@ -30,7 +76,7 @@ const ProductModal = ({ open, handleClose, product }) => {
                     />
                 </Box>
 
-                {/* RIGHT CONTENT */}
+                {/* CONTENT */}
                 <Box
                     sx={{
                         flex: 1,
@@ -103,14 +149,18 @@ const ProductModal = ({ open, handleClose, product }) => {
                         <Typography variant="body2">{product.description}</Typography>
                     </Box>
 
-                    {/* Button */}
+                    {/* BUTTON */}
                     <Button
+                        onClick={handleAddToCart}
                         variant="contained"
                         fullWidth
                         sx={{
                             mt: 3,
+                            py: 1.5,
                             bgcolor: "black",
                             "&:hover": { bgcolor: "#333" },
+                            position: isMobile ? "sticky" : "static",
+                            bottom: 0,
                         }}
                     >
                         Add To Bag

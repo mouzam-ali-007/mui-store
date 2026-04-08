@@ -28,6 +28,7 @@ const HomePage = () => (
 function App() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [user, setUser] = useState(null);
+  console.log("🚀 ~ App ~ user:", user)
 
   // Check session on mount
   useEffect(() => {
@@ -55,47 +56,42 @@ function App() {
 
   return (
     <BrowserRouter>
-      {/* Show Navbar only if logged in */}
-      {user && <Navbar setMobileOpen={setMobileOpen} />}
+      <Routes>
 
-      <Box sx={{ display: "flex" }}>
-        {/* Show Sidebar only if logged in */}
-        {user && <SideBar mobileOpen={mobileOpen} setMobileOpen={setMobileOpen} />}
+        {/* Auth Route (NO layout) */}
+        <Route path="/auth" element={<AuthPage />} />
+        <Route path="/addProduct" element={<AddProduct />} />
 
-        {/* Main content */}
-        <Box sx={{ flexGrow: 1, p: 3, overflow: "hidden" }}>
-          <Routes>
-            {/* Auth route */}
-            <Route
-              path="/auth"
-              element={!user ? <AuthPage /> : <Navigate to="/" />}
-            />
+        {/* Protected Layout */}
+        <Route
+          path="/*"
+          element={
+            (
+              <>
+                <Navbar setMobileOpen={setMobileOpen} />
 
-            {/* Home page - protected */}
-            <Route
-              path="/"
-              element={user ? <HomePage /> : <Navigate to="/auth" />}
-            />
+                <Box sx={{ display: "flex" }}>
+                  <SideBar mobileOpen={mobileOpen} setMobileOpen={setMobileOpen} />
 
-            {/* Product details */}
-            <Route
-              path="/product/:id"
-              element={user ? <ProductDetailsPage /> : <Navigate to="/auth" />}
-            />
+                  <Box sx={{ flexGrow: 1, p: 3, overflow: "hidden" }}>
+                    <Routes>
+                      <Route path="/" element={<HomePage />} />
+                      <Route path="/product/:id" element={<ProductDetailsPage />} />
 
-            {/* Add product */}
-            <Route
-              path="/addProduct"
-              element={user ? <AddProduct /> : <Navigate to="/auth" />}
-            />
-          </Routes>
-        </Box>
-      </Box>
+                    </Routes>
+                  </Box>
+                </Box>
 
-      {/* Optional Footer */}
-      {user && <Footer />}
+                <Footer />
+              </>
+            )
+          }
+        />
+
+      </Routes>
     </BrowserRouter>
   );
 }
 
 export default App;
+

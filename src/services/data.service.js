@@ -18,6 +18,7 @@ export const signUpWithEmail = async (email, password) => {
 // Email Login
 export const loginWithEmail = async (email, password) => {
     const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+    console.log("🚀 ~ loginWithEmail ~ data:", data)
     if (error) throw error;
     return data;
 };
@@ -25,6 +26,7 @@ export const loginWithEmail = async (email, password) => {
 // Phone OTP (Login or Sign Up)
 export const loginWithPhone = async (phone) => {
     const { data, error } = await supabase.auth.signInWithOtp({ phone });
+    console.log("🚀 ~ loginWithPhone ~ error:", error)
     if (error) throw error;
     return data;
 };
@@ -32,8 +34,8 @@ export const loginWithPhone = async (phone) => {
 
 // User sign-in
 export async function signIn() {
-    let email = "mouzam.ali@dubizzlelabs.com";
-    let password = "@wadizaha2026"
+    let email = "mouzamsaleem007@gmail.com";
+    let password = "@mouzam2026"
     const { data, error } = await supabase.auth.signInWithPassword({ email, password })
     if (error) throw error
     return data.user
@@ -42,7 +44,8 @@ export async function signIn() {
 // User sign-out
 export async function signOut() {
     const { error } = await supabase.auth.signOut()
-    if (error) throw error
+    sessionStorage.removeItem("user")
+    if (error) return error
 }
 
 export async function addProduct(product) {
@@ -53,6 +56,7 @@ export async function addProduct(product) {
     // Get current session
     const session = await supabase.auth.getSession() // returns a Promise
     const user = session?.data?.session
+    sessionStorage.setItem("user", JSON.stringify(user))
     console.log("🚀 ~ addProduct ~ user:", user)
 
     //const imageUrl = await uploadImageFromPath(product.image)

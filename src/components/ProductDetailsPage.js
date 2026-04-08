@@ -19,6 +19,7 @@ const ProductDetailsPage = () => {
   }, [id])
   // Find product by id from URL params
 
+  let user = JSON.parse(sessionStorage.getItem("user"))
 
   return (
     <Container sx={{ mt: 5, mb: 10 }}>
@@ -35,7 +36,7 @@ const ProductDetailsPage = () => {
       </Box>
 
       {/* Product Details Component */}
-      <ProductDetails product={product} />
+      <ProductDetails product={product} user={user} />
     </Container>
   );
 };

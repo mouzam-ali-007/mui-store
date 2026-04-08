@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
     Card,
     CardMedia,
@@ -22,7 +22,11 @@ const ProductCard = ({ product }) => {
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
 
+
     const navigate = useNavigate();
+
+
+
 
 
     return (
@@ -149,7 +153,9 @@ const ProductCard = ({ product }) => {
                 <ShoppingBagOutlinedIcon />
             </IconButton>
 
-            <ProductModal open={open} handleClose={handleClose} product={product} />
+            <ProductModal open={open} handleClose={handleClose} product={product}
+
+            />
 
         </Card>
     );
