@@ -11,15 +11,19 @@ import {
 import AddIcon from "@mui/icons-material/Add";
 import RemoveIcon from "@mui/icons-material/Remove";
 import { useNavigate } from "react-router-dom";
+import { useAppDispatch } from "../store/hooks";
+import { addItem } from "../store/cartSlice";
 
-
-const ProductDetails = ({ product, user }) => {
+const ProductDetails = ({ product }) => {
   const [selectedImage, setSelectedImage] = useState(
     product?.images?.[0] || product?.image
   );
   const [selectedSize, setSelectedSize] = useState(null);
   const [qty, setQty] = useState(1);
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
+
+  const user = JSON.parse(sessionStorage.getItem("user") || "null");
 
   if (!product) return <Typography>Product not found.</Typography>;
 
@@ -28,7 +32,14 @@ const ProductDetails = ({ product, user }) => {
       navigate("/auth");
       return;
     }
-    console.log("Added to cart");
+    dispatch(addItem({
+      id: product.id,
+      name: `${product.brand || ""} ${product.name}`,
+      price: product.price,
+      image: product.image,
+      quantity: qty,
+      size: selectedSize || undefined,
+    }));
   };
 
   return (

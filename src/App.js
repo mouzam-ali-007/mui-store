@@ -1,5 +1,7 @@
 // App.js
 import React, { useState, useEffect } from "react";
+import { Provider } from 'react-redux';
+import { store } from './store';
 import Navbar from "./components/Navbar";
 import Home from "./pages/Home";
 import Contact from "./pages/Contact";
@@ -29,6 +31,7 @@ const HomePage = () => (
 function App() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [user, setUser] = useState(null);
+  const [checkoutOpen, setCheckoutOpen] = useState(false);
 
 
   // Check session on mount
@@ -56,43 +59,45 @@ function App() {
   }, []);
 
   return (
-    <BrowserRouter>
-      <Routes>
+    <Provider store={store}>
+      <BrowserRouter>
+        <Routes>
 
-        {/* Auth Route (NO layout) */}
-        <Route path="/auth" element={<AuthPage />} />
-        <Route path="/addProduct" element={<AddProduct />} />
+          {/* Auth Route (NO layout) */}
+          <Route path="/auth" element={<AuthPage />} />
+          <Route path="/addProduct" element={<AddProduct />} />
 
-        {/* Protected Layout */}
-        <Route
-          path="/*"
-          element={
-            (
-              <>
-                <Navbar setMobileOpen={setMobileOpen} />
+          {/* Protected Layout */}
+          <Route
+            path="/*"
+            element={
+              (
+                <>
+                  <Navbar setMobileOpen={setMobileOpen} setCheckoutOpen={setCheckoutOpen} />
 
-                <Box sx={{ display: "flex" }}>
-                  <SideBar mobileOpen={mobileOpen} setMobileOpen={setMobileOpen} />
+                  <Box sx={{ display: "flex" }}>
+                    <SideBar mobileOpen={mobileOpen} setMobileOpen={setMobileOpen} />
 
-                  <Box sx={{ flexGrow: 1, p: 3, overflow: "hidden" }}>
-                    <Routes>
-                      <Route path="/" element={<HomePage />} />
-                      <Route path="/product/:id" element={<ProductDetailsPage />} />
+                    <Box sx={{ flexGrow: 1, p: 3, overflow: "hidden" }}>
+                      <Routes>
+                        <Route path="/" element={<HomePage />} />
+                        <Route path="/product/:id" element={<ProductDetailsPage />} />
 
 
-                      <Route path="/comingsoon" element={<ComingSoon />} />
-                    </Routes>
+                        <Route path="/comingsoon" element={<ComingSoon />} />
+                      </Routes>
+                    </Box>
                   </Box>
-                </Box>
 
-                <Footer />
-              </>
-            )
-          }
-        />
+                  <Footer />
+                </>
+              )
+            }
+          />
 
-      </Routes>
-    </BrowserRouter>
+        </Routes>
+      </BrowserRouter>
+    </Provider>
   );
 }
 

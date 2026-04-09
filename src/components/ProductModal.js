@@ -11,25 +11,17 @@ import {
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import { useNavigate } from "react-router-dom";
+import { useAppDispatch } from "../store/hooks";
+import { addItem } from "../store/cartSlice";
 
 const ProductModal = ({ open, handleClose, product }) => {
 
     const navigate = useNavigate();
+    const dispatch = useAppDispatch();
+    const user = JSON.parse(sessionStorage.getItem("user") || "null");
 
     const theme = useTheme();
-    const [user, setUser] = useState(null);
     const isMobile = useMediaQuery(theme.breakpoints.down("md"));
-
-    // useEffect to load user on mount
-    useEffect(() => {
-        const storedUser = sessionStorage.getItem("user");
-
-        if (storedUser) {
-            setUser(JSON.parse(storedUser));
-        }
-    }, []); // empty dependency array means it runs once on mount
-
-
 
     if (!product) return null;
 
@@ -40,7 +32,13 @@ const ProductModal = ({ open, handleClose, product }) => {
             navigate("/auth");
             return;
         }
-
+        dispatch(addItem({
+            id: product.id,
+            name: `${product.brand || ""} ${product.name}`,
+            price: product.price,
+            image: product.image,
+            quantity: 1,
+        }));
     };
 
     return (

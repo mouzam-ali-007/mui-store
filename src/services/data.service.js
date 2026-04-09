@@ -156,6 +156,21 @@ async function uploadImageFromPath(imagePath) {
     return publicUrl.publicUrl
 }
 
+export async function placeOrder(orderData) {
+    const { data, error } = await supabase
+        .from('orders')
+        .insert([orderData])
+        .select();
+
+    if (error) {
+        console.error('Error placing order:', error);
+        throw error;
+    }
+
+    console.log('Order placed:', data);
+    return data;
+}
+
 
 // async function getMedia() {
 
@@ -174,3 +189,4 @@ async function uploadImageFromPath(imagePath) {
 //         console.log(71, error);
 //     }
 // }
+

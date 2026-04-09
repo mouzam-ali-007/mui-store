@@ -12,6 +12,7 @@ import {
   Menu,
   useMediaQuery,
   useTheme,
+  Badge,
   Drawer,
   Button
 } from "@mui/material";
@@ -19,14 +20,18 @@ import SearchIcon from "@mui/icons-material/Search";
 import ShoppingBagOutlinedIcon from "@mui/icons-material/ShoppingBagOutlined";
 import MenuIcon from "@mui/icons-material/Menu";
 import ShoppingBag from "./ShoppingBag";
+import { useAppSelector } from '../store/hooks';
 
 const Navbar = ({ setMobileOpen }) => {
   const [anchorEl, setAnchorEl] = useState(null);
   const [currency, setCurrency] = useState("PKR");
-
   const [bagOpen, setBagOpen] = useState(false);
-
   const [country] = useState("Pakistan");
+
+  const [checkoutOpen, setCheckoutOpen] = useState(false);
+
+
+  const cartItemsCount = useAppSelector((state) => state.cart.items.reduce((sum, item) => sum + item.quantity, 0));
 
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
@@ -90,8 +95,6 @@ const Navbar = ({ setMobileOpen }) => {
         {/* SEARCH */}
         {isMobile ? searchBar : null}
 
-
-
         {/* DESKTOP: show search bar */}
         {!isMobile && searchBar}
 
@@ -131,10 +134,12 @@ const Navbar = ({ setMobileOpen }) => {
           </Menu>
 
           <IconButton onClick={() => setBagOpen(true)}>
-            <ShoppingBagOutlinedIcon />
+            <Badge badgeContent={cartItemsCount} color="primary" max={99}>
+              <ShoppingBagOutlinedIcon />
+            </Badge>
           </IconButton>
 
-          <ShoppingBag bagOpen={bagOpen} setBagOpen={setBagOpen} />
+          <ShoppingBag bagOpen={bagOpen} setBagOpen={setBagOpen} setCheckoutOpen={setCheckoutOpen} />
 
         </Box>
       </Toolbar>
