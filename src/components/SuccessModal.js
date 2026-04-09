@@ -16,7 +16,6 @@ import { useNavigate } from 'react-router-dom';
 import CloseIcon from "@mui/icons-material/Close";
 
 const SuccessModal = ({ open, onClose, orderSummary }) => {
-    console.log("🚀 ~ SuccessModal ~ open:", open)
     const navigate = useNavigate();
 
     return (

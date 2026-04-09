@@ -46,6 +46,14 @@ export async function signOut() {
     const { error } = await supabase.auth.signOut()
     sessionStorage.removeItem("user")
     if (error) return error
+    return true
+}
+
+
+export async function getUserSession() {
+    const session = await supabase.auth.getSession() // returns a Promise
+    const user = session?.data
+    return user
 }
 
 export async function addProduct(product) {
@@ -149,7 +157,6 @@ async function uploadImageFromPath(imagePath) {
 
 
     const { data: publicUrl } = supabase.storage
-    console.log("🚀 ~ uploadImageFromPath ~ data:", data)
         .from('products')
         .getPublicUrl(fileName)
 

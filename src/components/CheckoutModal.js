@@ -80,7 +80,6 @@ const CheckoutModal = ({ open, onClose, onSuccess }) => {
                 total,
                 ...formData,
             };
-            console.log("🚀 ~ handleSubmit ~ orderData:", orderData)
             const res = await placeOrder(orderData);
             //dispatch(clearCart());
             setOrderSummary(orderData);

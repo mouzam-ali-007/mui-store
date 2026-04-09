@@ -10,18 +10,9 @@ import {
 } from "@mui/material";
 import ExpandLess from "@mui/icons-material/ExpandLess";
 import ExpandMore from "@mui/icons-material/ExpandMore";
-import { signOut } from "../services/data.service";
+import { getUserSession, signOut } from "../services/data.service";
 import { useNavigate } from "react-router-dom";
 
-import { createClient } from '@supabase/supabase-js'
-
-
-let url = 'https://hrjxxzzumohxrhrmflxk.supabase.co'
-
-let anon_key = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imhyanh4enp1bW9oeHJocm1mbHhrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUyNjgwNzcsImV4cCI6MjA5MDg0NDA3N30.0Gw8I2hVgMQmfHSoCw057WkOz4JslLdS1ZmxsuVyT38'
-
-
-export const supabase = createClient(url, anon_key)
 
 const SideBar = ({ mobileOpen, setMobileOpen }) => {
   const [openWomen, setOpenWomen] = useState(false);
@@ -39,21 +30,24 @@ const SideBar = ({ mobileOpen, setMobileOpen }) => {
 
   useEffect(() => {
 
-
-
     const getSession = async () => {
-      const { data } = await supabase.auth.getSession();
-      setUser(data?.session);
+      const res = await getUserSession()
+
+      if (res) {
+        setUser(res.session);
+      }
+
     };
 
     getSession();
 
-  }, [user]);
+  }, []);
 
   const handleLogout = async () => {
-    const res = signOut();
+    const res = await signOut();
 
     if (res) {
+      setUser(null);
       navigate("/");
     }
 
