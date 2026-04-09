@@ -24,7 +24,7 @@ let anon_key = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJ
 export const supabase = createClient(url, anon_key)
 
 const SideBar = ({ mobileOpen, setMobileOpen }) => {
-  const [openWomen, setOpenWomen] = useState(true);
+  const [openWomen, setOpenWomen] = useState(false);
   const [user, setUser] = useState(true);
 
 
@@ -62,7 +62,7 @@ const SideBar = ({ mobileOpen, setMobileOpen }) => {
   const drawerContent = (
     <List sx={{ padding: "20px" }}>
       <ListItemButton>
-        <ListItemText primary="All" />
+        <ListItemText primary="All" onClick={() => navigate("/")} />
       </ListItemButton>
 
       <ListItemButton>
@@ -75,7 +75,7 @@ const SideBar = ({ mobileOpen, setMobileOpen }) => {
       <ListItemButton
         onClick={handleWomenClick}
         sx={{
-          border: "2px solid #1976d2",
+          border: "1px solid",
           borderRadius: "12px",
           mb: 1
         }}

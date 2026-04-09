@@ -54,8 +54,9 @@ const Navbar = ({ setMobileOpen }) => {
         sx={{ mr: 2 }}
       >
         <MenuItem value="All">All</MenuItem>
-        <MenuItem value="Clothes">Clothes</MenuItem>
-        <MenuItem value="Shoes">Shoes</MenuItem>
+        <MenuItem value="Clothes">Men</MenuItem>
+        <MenuItem value="Shoes">Women</MenuItem>
+        <MenuItem value="kids">Kids</MenuItem>
       </Select>
 
       <InputBase
