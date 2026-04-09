@@ -104,7 +104,7 @@ const ProductDetails = ({ product }) => {
           {/* Price */}
           <Box sx={{ mt: 2 }}>
             <Typography variant="h5" fontWeight={700}>
-              ${product.price}
+              PKR {product.price}
             </Typography>
 
             <Box sx={{ display: "flex", gap: 1 }}>

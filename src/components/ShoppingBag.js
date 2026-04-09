@@ -76,7 +76,7 @@ const ShoppingBag = ({ bagOpen, setBagOpen, }) => {
               <Box sx={{ display: 'flex', flexDirection: 'column', flex: 1 }}>
                 <Typography variant="body2" fontWeight="medium">{item.name}</Typography>
                 <Typography variant="body2" color="text.secondary">
-                  ${item.price} x {item.quantity}
+                  PKR{item.price} x {item.quantity}
                 </Typography>
                 {item.size && <Typography variant="caption">Size: {item.size}</Typography>}
               </Box>
@@ -112,7 +112,7 @@ const ShoppingBag = ({ bagOpen, setBagOpen, }) => {
 
         <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
           <Typography>Total:</Typography>
-          <Typography variant="h6" fontWeight="bold">${total.toFixed(2)}</Typography>
+          <Typography variant="h6" fontWeight="bold">PKR {total.toFixed(2)}</Typography>
         </Box>
 
         <Button

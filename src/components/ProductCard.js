@@ -92,7 +92,7 @@ const ProductCard = ({ product }) => {
                 {/* Price */}
                 <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
                     <Typography sx={{ color: "red", fontWeight: 700 }}>
-                        ${product.price}
+                        PKR {product.price}
                     </Typography>
 
                     {product.oldPrice && (

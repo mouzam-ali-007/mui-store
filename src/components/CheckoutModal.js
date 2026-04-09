@@ -11,6 +11,9 @@ import {
     Alert,
     useTheme,
 } from '@mui/material';
+import IconButton from "@mui/material/IconButton";
+import CloseIcon from "@mui/icons-material/Close";
+
 import { useAppSelector, useAppDispatch } from '../store/hooks';
 import { clearCart } from '../store/cartSlice';
 import { placeOrder } from '../services/data.service';
@@ -77,9 +80,14 @@ const CheckoutModal = ({ open, onClose, onSuccess }) => {
                 total,
                 ...formData,
             };
-            await placeOrder(orderData);
-            dispatch(clearCart());
-            onSuccess();
+            console.log("🚀 ~ handleSubmit ~ orderData:", orderData)
+            const res = await placeOrder(orderData);
+            //dispatch(clearCart());
+            setOrderSummary(orderData);
+            setSuccessOpen(true)
+            onClose()
+            // onSuccess();
+
         } catch (err) {
 
             setError('Failed to place order. Please try again.');
@@ -93,7 +101,23 @@ const CheckoutModal = ({ open, onClose, onSuccess }) => {
     return (
         <>
             <Dialog open={open} onClose={!loading ? onClose : undefined} maxWidth="sm" fullWidth>
-                <DialogTitle>Checkout</DialogTitle>
+
+                <DialogTitle sx={{ pr: 6 }}>
+                    Checkout
+                </DialogTitle>
+
+                {!loading && (
+                    <IconButton
+                        onClick={onClose}
+                        sx={{
+                            position: "absolute",
+                            right: 8,
+                            top: 8,
+                        }}
+                    >
+                        <CloseIcon />
+                    </IconButton>
+                )}
                 <DialogContent>
                     <Typography variant="h6" sx={{ mb: 2 }}>Order Summary</Typography>
                     <Box sx={{ mb: 3 }}>

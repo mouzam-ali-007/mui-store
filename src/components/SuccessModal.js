@@ -10,10 +10,13 @@ import {
     List,
     ListItem,
     ListItemText,
+    IconButton,
 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
+import CloseIcon from "@mui/icons-material/Close";
 
 const SuccessModal = ({ open, onClose, orderSummary }) => {
+    console.log("🚀 ~ SuccessModal ~ open:", open)
     const navigate = useNavigate();
 
     return (
@@ -21,6 +24,19 @@ const SuccessModal = ({ open, onClose, orderSummary }) => {
             <DialogTitle sx={{ textAlign: 'center', bgcolor: 'success.light', color: 'success.dark' }}>
                 Order Placed Successfully! 🎉
             </DialogTitle>
+
+            {(
+                <IconButton
+                    onClick={onClose}
+                    sx={{
+                        position: "absolute",
+                        right: 8,
+                        top: 8,
+                    }}
+                >
+                    <CloseIcon />
+                </IconButton>
+            )}
             <DialogContent sx={{ p: 3 }}>
                 <Typography variant="h6" sx={{ mb: 2, textAlign: 'center' }}>
                     Thank you for your purchase!
@@ -50,7 +66,7 @@ const SuccessModal = ({ open, onClose, orderSummary }) => {
                 )}
 
                 <Typography variant="body2" color="text.secondary" sx={{ textAlign: 'center' }}>
-                    Delivery to: {orderSummary?.formData?.address || 'Your address'}
+                    Delivery to: {orderSummary?.address || 'Your address'}
                 </Typography>
             </DialogContent>
             <DialogActions sx={{ justifyContent: 'center' }}>
