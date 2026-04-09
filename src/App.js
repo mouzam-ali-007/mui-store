@@ -15,6 +15,7 @@ import FilterProduct from "./components/FilterProduct";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import AuthPage from "./components/AuthPage"; // your login/signup page
 import { supabase } from "./services/data.service"; // your Supabase client
+import ComingSoon from "./components/CommingSoon";
 
 // Home page component
 const HomePage = () => (
@@ -78,6 +79,8 @@ function App() {
                       <Route path="/" element={<HomePage />} />
                       <Route path="/product/:id" element={<ProductDetailsPage />} />
 
+
+                      <Route path="/comingsoon" element={<ComingSoon />} />
                     </Routes>
                   </Box>
                 </Box>

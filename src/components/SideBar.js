@@ -66,12 +66,10 @@ const SideBar = ({ mobileOpen, setMobileOpen }) => {
       </ListItemButton>
 
       <ListItemButton>
-        <ListItemText primary="New Arrivals" />
+        <ListItemText primary="Men" onClick={() => navigate("/comingsoon")} />
       </ListItemButton>
 
-      <ListItemButton>
-        <ListItemText primary="West" />
-      </ListItemButton>
+
 
       {/* Women dropdown */}
       <ListItemButton
@@ -86,25 +84,29 @@ const SideBar = ({ mobileOpen, setMobileOpen }) => {
         {openWomen ? <ExpandLess /> : <ExpandMore />}
       </ListItemButton>
 
+
+
       <Collapse in={openWomen} timeout="auto" unmountOnExit>
         <List component="div" disablePadding>
           <ListItemButton sx={{ pl: 4 }}>
-            <ListItemText primary="Clothing" />
+            <ListItemText primary="Pouch Bags" />
           </ListItemButton>
 
           <ListItemButton sx={{ pl: 4 }}>
-            <ListItemText primary="Accessories" />
+            <ListItemText primary="Clutches" />
           </ListItemButton>
 
           <ListItemButton sx={{ pl: 4 }}>
-            <ListItemText primary="Footwear" />
+            <ListItemText primary="Mini Bags" />
           </ListItemButton>
 
-          <ListItemButton sx={{ pl: 4 }}>
-            <ListItemText primary="Lingerie and Sleepwear" />
-          </ListItemButton>
+
         </List>
       </Collapse>
+
+      <ListItemButton>
+        <ListItemText primary="Kids" onClick={() => navigate("/comingsoon")} />
+      </ListItemButton>
 
       {user && <ListItemButton
         onClick={handleLogout}
