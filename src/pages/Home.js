@@ -7,10 +7,20 @@ import ProductCard from "../components/ProductCard";
 import { getProducts, signIn } from "../services/data.service";
 import { Add } from "@mui/icons-material";
 import AddProduct from "../components/AddProduct";
+import { LinearProgress } from "@mui/material";
 
 const Home = () => {
 
     const [savedProducts, setStoredProducts] = useState([])
+
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        // simulate API call (replace with your real fetch)
+        setTimeout(() => {
+            setLoading(false);
+        }, 1500);
+    }, []);
 
     useEffect(() => {
         signIn().then((data) => {
@@ -51,18 +61,33 @@ const Home = () => {
 
 
     return (
-        <Container sx={{ mt: 15 }}>
+        <>
 
-            <Grid container spacing={3}>
-                {savedProducts.map((product) => (
-                    <Grid item key={product.id} xs={6} sm={6} md={3} lg={2}>
-                        <ProductCard product={product} />
-                    </Grid>
-                ))}
-            </Grid>
+            {loading && (
+                <LinearProgress
+                    sx={{
+                        position: "fixed",
+                        top: 0,
+                        left: 0,
+                        width: "100%",
+                        zIndex: 2000,
+                    }}
+                />
+            )}
+            <Container sx={{ mt: 15 }}>
+
+                <Grid container spacing={3}>
+                    {savedProducts.map((product) => (
+                        <Grid item key={product.id} xs={6} sm={6} md={3} lg={2}>
+                            <ProductCard product={product} />
+                        </Grid>
+                    ))}
+                </Grid>
 
 
-        </Container>
+            </Container>
+        </>
+
     );
 };
 

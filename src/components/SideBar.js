@@ -82,15 +82,15 @@ const SideBar = ({ mobileOpen, setMobileOpen }) => {
 
       <Collapse in={openWomen} timeout="auto" unmountOnExit>
         <List component="div" disablePadding>
-          <ListItemButton sx={{ pl: 4 }}>
+          <ListItemButton sx={{ pl: 4 }} onClick={() => navigate("/women")}>
             <ListItemText primary="Pouch Bags" />
           </ListItemButton>
 
-          <ListItemButton sx={{ pl: 4 }}>
+          <ListItemButton sx={{ pl: 4 }} onClick={() => navigate("/women")}>
             <ListItemText primary="Clutches" />
           </ListItemButton>
 
-          <ListItemButton sx={{ pl: 4 }}>
+          <ListItemButton sx={{ pl: 4 }} onClick={() => navigate("/women")}>
             <ListItemText primary="Mini Bags" />
           </ListItemButton>
 

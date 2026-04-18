@@ -24,16 +24,7 @@ const ProductDetailsPage = () => {
   return (
     <Container sx={{ mt: 5, mb: 10 }}>
       {/* Back button */}
-      <Box sx={{ mb: 3 }}>
-        <Button
-          component={Link}
-          to="/"
-          startIcon={<ArrowBackIcon />}
-          color="inherit"
-        >
-          Back to Home
-        </Button>
-      </Box>
+
 
       {/* Product Details Component */}
       <ProductDetails product={product} user={user} />

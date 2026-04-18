@@ -18,15 +18,20 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import AuthPage from "./components/AuthPage"; // your login/signup page
 import { supabase } from "./services/data.service"; // your Supabase client
 import ComingSoon from "./components/CommingSoon";
+import ShopStores from "./components/ShopStores";
+import WomenPage from "./components/WomenPage";
 
 // Home page component
 const HomePage = () => (
   <>
     <CarousalComponent />
-    <FilterProduct />
+    <ShopStores />
     <Home />
+
   </>
 );
+
+
 
 function App() {
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -81,6 +86,8 @@ function App() {
                     <Box sx={{ flexGrow: 1, p: 3, overflow: "hidden" }}>
                       <Routes>
                         <Route path="/" element={<HomePage />} />
+
+                        <Route path="/women" element={<WomenPage />} />
                         <Route path="/product/:id" element={<ProductDetailsPage />} />
 
 

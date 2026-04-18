@@ -7,15 +7,12 @@ const items = [
 
   {
     id: 1,
-    img: "/banner2.jpeg",
+    img: "/banner1.jpg",
   },
+
   {
     id: 2,
-    img: "/banner.jpeg",
-  },
-  {
-    id: 3,
-    img: "/banner2.jpeg",
+    img: "/banner2.avif",
   },
 ];
 
@@ -28,7 +25,7 @@ const CarousalComponent = () => {
         animation="slide"
         duration={500}
         indicators={true}
-        navButtonsAlwaysVisible={true}
+        navButtonsAlwaysVisible={false}
         cycleNavigation
         swipe={true}
       >
@@ -37,9 +34,13 @@ const CarousalComponent = () => {
             key={item.id}
             sx={{
               width: "100%",
-              height: { xs: 200, md: 350 },
-              borderRadius: "20px",
+
+              height: { xs: 200, md: 320 },
+              borderRadius: "20px 20px 20px 20px",
               overflow: "hidden",
+              marginLeft: "auto",
+              marginRight: "auto",
+
             }}
           >
             <img
@@ -49,6 +50,7 @@ const CarousalComponent = () => {
                 width: "100%",
                 height: "90%",
                 objectFit: "cover",
+                borderRadius: "20px 20px 20px 20px",
               }}
             />
           </Box>

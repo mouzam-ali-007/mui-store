@@ -145,9 +145,9 @@ const FilterProduct = () => {
 
                 <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleClose}>
                     <MenuItem onClick={() => handleSelectCategory("")}>All</MenuItem>
-                    <MenuItem onClick={() => handleSelectCategory("Electronics")}>Electronics</MenuItem>
-                    <MenuItem onClick={() => handleSelectCategory("Clothes")}>Clothes</MenuItem>
-                    <MenuItem onClick={() => handleSelectCategory("Books")}>Books</MenuItem>
+                    <MenuItem onClick={() => handleSelectCategory("Pouch Bags")}>Pouch Bags</MenuItem>
+                    <MenuItem onClick={() => handleSelectCategory("Clutches")}>Clutches</MenuItem>
+                    <MenuItem onClick={() => handleSelectCategory("Mini Bags")}>Mini BAgs</MenuItem>
                 </Menu>
 
                 {/* Filter Button */}
