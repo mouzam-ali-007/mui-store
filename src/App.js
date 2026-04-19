@@ -11,7 +11,7 @@ import SideBar from "./components/SideBar";
 import { Box } from "@mui/material";
 import CarousalComponent from "./components/carousal";
 import ProductCard from "./components/ProductCard";
-import AddProduct from "./components/AddProduct";
+
 import FilterProduct from "./components/FilterProduct";
 
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
@@ -70,7 +70,7 @@ function App() {
 
           {/* Auth Route (NO layout) */}
           <Route path="/auth" element={<AuthPage />} />
-          <Route path="/addProduct" element={<AddProduct />} />
+
 
           {/* Protected Layout */}
           <Route

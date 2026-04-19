@@ -58,9 +58,6 @@ export async function getUserSession() {
 
 export async function addProduct(product) {
 
-
-
-
     // Get current session
     const session = await supabase.auth.getSession() // returns a Promise
     const user = session?.data?.session

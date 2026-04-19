@@ -78,6 +78,7 @@ const CheckoutModal = ({ open, onClose, onSuccess }) => {
                 user_id: user.id,
                 items,
                 total,
+                status: 'pending',
                 ...formData,
             };
             const res = await placeOrder(orderData);

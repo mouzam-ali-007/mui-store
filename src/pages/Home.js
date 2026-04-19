@@ -6,7 +6,7 @@ import ProductCard from "../components/ProductCard";
 // import { products } from "../data/products";
 import { getProducts, signIn } from "../services/data.service";
 import { Add } from "@mui/icons-material";
-import AddProduct from "../components/AddProduct";
+
 import { LinearProgress } from "@mui/material";
 
 const Home = () => {
