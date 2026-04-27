@@ -19,16 +19,29 @@ import { clearCart } from '../store/cartSlice';
 import { placeOrder } from '../services/data.service';
 import { useNavigate } from 'react-router-dom';
 import SuccessModal from './SuccessModal';
+import PhoneInput from "react-phone-input-2";
+import "react-phone-input-2/lib/style.css";
 
-const CheckoutModal = ({ open, onClose, onSuccess }) => {
+const CheckoutModal = ({ open, onClose, onSuccess, product = [] }) => {
+
     const theme = useTheme();
     const navigate = useNavigate();
     const dispatch = useAppDispatch();
 
-    const { items, total } = useAppSelector((state) => {
-        const total = state.cart.items.reduce((sum, item) => sum + item.price * item.quantity, 0);
-        return { items: state.cart.items, total };
-    });
+    const cartItems = useAppSelector((state) => state.cart.items);
+
+    // Decide source of truth
+    const items = product.length > 0 ? product : cartItems;
+
+    const total = items.reduce(
+        (sum, item) => sum + item.price * item.quantity,
+        0
+    );
+
+    // const { items, total } = useAppSelector((state) => {
+    //     const total = state.cart.items.reduce((sum, item) => sum + item.price * item.quantity, 0);
+    //     return { items: state.cart.items, total };
+    // });
 
     const user = useMemo(() => {
         return JSON.parse(sessionStorage.getItem('user') || 'null');
@@ -143,14 +156,15 @@ const CheckoutModal = ({ open, onClose, onSuccess }) => {
                             required
                             sx={{ mb: 2 }}
                         />
-                        <TextField
-                            fullWidth
-                            label="Phone Number"
+                        <PhoneInput
+                            country={"pk"} // default Pakistan
                             value={formData.phone}
-                            onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                            required
-                            sx={{ mb: 2 }}
+                            onChange={(phone) => setFormData({ ...formData, phone })}
+                            enableSearch={true} // search countries
+                            inputStyle={{ width: "100%" }}
                         />
+
+
                         <TextField
                             fullWidth
                             label="Email"
@@ -158,7 +172,7 @@ const CheckoutModal = ({ open, onClose, onSuccess }) => {
                             value={formData.email}
                             onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                             required
-                            sx={{ mb: 2 }}
+                            sx={{ mb: 2, mt: 2 }}
                         />
                         <TextField
                             fullWidth

@@ -25,10 +25,6 @@ const ProductCard = ({ product }) => {
 
     const navigate = useNavigate();
 
-
-
-
-
     return (
         <Card
             sx={{

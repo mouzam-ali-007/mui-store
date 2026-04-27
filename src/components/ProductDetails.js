@@ -17,8 +17,11 @@ import { addItem } from "../store/cartSlice";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 
 import { useParams, Link } from "react-router-dom";
+import CheckoutModal from "./CheckoutModal";
 
 const ProductDetails = ({ product }) => {
+  const [checkoutOpen, setCheckoutOpen] = useState(false);
+
   const [selectedImage, setSelectedImage] = useState(
     product?.images?.[0] || product?.image
   );
@@ -57,6 +60,14 @@ const ProductDetails = ({ product }) => {
 
   if (!product) return <Typography>Product not found.</Typography>;
 
+
+  const goToCheckout = () => {
+    setCheckoutOpen(true);
+  }
+
+  const handleCheckoutSuccess = () => {
+    setCheckoutOpen(false);
+  };
 
 
   const handleAddToCart = () => {
@@ -247,13 +258,28 @@ const ProductDetails = ({ product }) => {
                 Add To Bag
               </Button>
 
-              <Button variant="outlined" sx={{ py: 1.5 }}>
+              <Button variant="outlined" sx={{ py: 1.5 }}
+                onClick={goToCheckout}
+              >
                 Buy Now
               </Button>
             </Box>
           </Grid>
         </Grid>
       </Box>
+      <CheckoutModal
+        open={checkoutOpen}
+        onClose={() => setCheckoutOpen(false)}
+        onSuccess={handleCheckoutSuccess}
+        product={[{
+          id: product.id,
+          name: `${product.brand || ""} ${product.name}`,
+          price: product.price,
+          image: product.image,
+          quantity: qty,
+          size: selectedSize || undefined,
+        }]}
+      />
     </>
 
   );
