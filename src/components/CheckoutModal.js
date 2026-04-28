@@ -78,8 +78,8 @@ const CheckoutModal = ({ open, onClose, onSuccess, product = [] }) => {
     }, [user]);
 
     if (!user) {
-        navigate('/auth');
-        return null;
+        //    navigate('/auth');
+        //    return null;
     }
 
     const handleSubmit = async (e) => {

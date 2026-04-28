@@ -29,8 +29,8 @@ const ProductModal = ({ open, handleClose, product }) => {
 
     const handleAddToCart = () => {
         if (!user) {
-            navigate("/auth");
-            return;
+            // navigate("/auth");
+            // return;
         }
         dispatch(addItem({
             id: product.id,
