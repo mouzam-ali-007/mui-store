@@ -88,7 +88,7 @@ const Navbar = ({ setMobileOpen }) => {
             </IconButton>
           )}
           <Typography variant="h6" fontWeight="bold">
-            Looma.PK
+            LUMA DEVAUX
           </Typography>
         </Box>
 
