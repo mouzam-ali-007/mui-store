@@ -27,6 +27,9 @@ const FilterProduct = ({
 
     const hasActiveFilters = Boolean(category || inStock || sortBy);
 
+
+    let filterCategories = ['women']
+
     return (
         <Box sx={{ mb: 3 }}>
             <Stack
@@ -66,7 +69,7 @@ const FilterProduct = ({
                     >
                         All Categories
                     </MenuItem>
-                    {categories.map((item) => (
+                    {filterCategories.map((item) => (
                         <MenuItem
                             key={item}
                             onClick={() => {
