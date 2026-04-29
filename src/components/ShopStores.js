@@ -1,9 +1,6 @@
 import React from "react";
 import { Box, Grid, Typography, Card, CardMedia } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-import FilterProduct from "./FilterProduct";
-import { Home } from "@mui/icons-material";
-import CarousalComponent from "./carousal";
 
 const categories = [
     { title: "Women", image: "/womens.avif", path: "/women" },
@@ -11,15 +8,6 @@ const categories = [
     { title: "Kids", image: "/kids.jpg", path: "/comingsoon" },
     { title: "Western Wear", image: "/speakers.jpg", path: "/comingsoon" }, // temp
 ];
-
-const HomePage = () => (
-    <>
-
-        <FilterProduct />
-        <Home />
-
-    </>
-);
 
 const ShopStores = () => {
     const navigate = useNavigate();

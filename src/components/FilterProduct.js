@@ -13,23 +13,20 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import TuneIcon from "@mui/icons-material/Tune";
 
 const FilterProduct = ({
-    category,
-    categories,
-    inStock,
-    sortBy,
-    onCategoryChange,
-    onInStockChange,
-    onSortChange,
-    onClearFilters
+    category = "",
+    categories = [],
+    inStock = false,
+    sortBy = "",
+    onCategoryChange = () => { },
+    onInStockChange = () => { },
+    onSortChange = () => { },
+    onClearFilters = () => { }
 }) => {
     const [categoryAnchorEl, setCategoryAnchorEl] = React.useState(null);
     const [sortAnchorEl, setSortAnchorEl] = React.useState(null);
 
     const hasActiveFilters = Boolean(category || inStock || sortBy);
-
-
     let filterCategories = ['women']
-
     return (
         <Box sx={{ mb: 3 }}>
             <Stack

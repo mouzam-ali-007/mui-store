@@ -45,9 +45,11 @@ const ProductModal = ({ open, handleClose, product }) => {
             quantity: 1,
             size: selectedSize || undefined,
         }));
+        handleClose();
     };
 
     const handleBuyNow = () => {
+        handleClose();
         setCheckoutOpen(true);
     };
 
@@ -66,6 +68,12 @@ const ProductModal = ({ open, handleClose, product }) => {
             maxWidth="lg"
             fullWidth
             fullScreen={isMobile}
+            PaperProps={{
+                sx: {
+                    overflow: "hidden",
+                    borderRadius: isMobile ? 0 : 4,
+                },
+            }}
         >
             <Box
                 sx={{
@@ -115,7 +123,6 @@ const ProductModal = ({ open, handleClose, product }) => {
                     sx={{
                         flex: 1,
                         p: { xs: 2, md: 4 },
-                        overflowY: "auto",
                         position: "relative",
                         bgcolor: "#fff",
                         borderTopLeftRadius: isMobile ? 24 : 0,
@@ -271,13 +278,12 @@ const ProductModal = ({ open, handleClose, product }) => {
                         spacing={1.5}
                         sx={{
                             mt: 4,
-                            position: isMobile ? "sticky" : "static",
-                            bottom: 0,
-                            bgcolor: isMobile ? "#fff" : "transparent",
-                            pt: isMobile ? 1.5 : 0,
+                            pt: 0.5,
+                            mb: { xs: 2, md: 1 },
                         }}
                     >
                         <Button
+                            type="button"
                             onClick={handleAddToCart}
                             variant="contained"
                             fullWidth
@@ -294,6 +300,7 @@ const ProductModal = ({ open, handleClose, product }) => {
                             Add To Bag
                         </Button>
                         <Button
+                            type="button"
                             onClick={handleBuyNow}
                             variant="outlined"
                             fullWidth

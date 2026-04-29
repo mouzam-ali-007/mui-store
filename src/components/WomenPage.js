@@ -3,7 +3,6 @@ import { Box, Button, LinearProgress } from "@mui/material";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { useNavigate } from "react-router-dom";
 
-import FilterProduct from "./FilterProduct";
 import Home from "../pages/Home";
 
 const WomenPage = () => {
@@ -46,7 +45,6 @@ const WomenPage = () => {
                 </Button>
 
                 {/* 👇 SHOW FILTER ONLY AFTER LOADING */}
-                {!loading && <FilterProduct />}
                 {!loading && <Home />}
             </Box>
         </>
