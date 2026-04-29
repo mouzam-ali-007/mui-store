@@ -18,7 +18,13 @@ const items = [
 
 const CarousalComponent = () => {
   return (
-    <div style={{ marginTop: "80px" }}>
+    <Box
+      sx={{
+        mt: "80px",
+        borderRadius: "20px",
+        overflow: "hidden",
+      }}
+    >
       <Carousel
         autoPlay
         interval={3000}
@@ -34,29 +40,29 @@ const CarousalComponent = () => {
             key={item.id}
             sx={{
               width: "100%",
-
-              height: { xs: 200, md: 320 },
-              borderRadius: "20px 20px 20px 20px",
-              overflow: "hidden",
-              marginLeft: "auto",
-              marginRight: "auto",
-
+              height: { xs: 220, sm: 280, md: 360, lg: 420 },
+              bgcolor: "#f6f1e8",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
             }}
           >
-            <img
+            <Box
+              component="img"
               src={item.img}
               alt="banner"
-              style={{
+              sx={{
                 width: "100%",
-                height: "90%",
-                objectFit: "cover",
-                borderRadius: "20px 20px 20px 20px",
+                height: "100%",
+                objectFit: "contain",
+                objectPosition: "center",
+                display: "block",
               }}
             />
           </Box>
         ))}
       </Carousel>
-    </div>
+    </Box>
   );
 };
 
