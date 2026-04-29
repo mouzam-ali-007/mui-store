@@ -1,348 +1,156 @@
-import React, { useState } from "react";
+import React from "react";
 import {
-    Stack,
+    Box,
     Button,
+    FormControlLabel,
     Menu,
     MenuItem,
-    Chip,
+    Stack,
     Switch,
-    FormControlLabel,
-    Box
+    Typography
 } from "@mui/material";
-import TuneIcon from "@mui/icons-material/Tune";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import TuneIcon from "@mui/icons-material/Tune";
 
-const FilterProduct = () => {
-    const [anchorEl, setAnchorEl] = useState(null);
+const FilterProduct = ({
+    category = "",
+    categories = [],
+    inStock = false,
+    sortBy = "",
+    onCategoryChange = () => { },
+    onInStockChange = () => { },
+    onSortChange = () => { },
+    onClearFilters = () => { }
+}) => {
+    const [categoryAnchorEl, setCategoryAnchorEl] = React.useState(null);
+    const [sortAnchorEl, setSortAnchorEl] = React.useState(null);
 
-
-    const [filterAnchorEl, setfilterAnchorEl] = useState(null);
-
-    const [anchor, setAnchor] = useState(null);
-    const [category, setCategory] = useState("");
-    const [inStock, setInStock] = useState(false);
-    const [activeMenu, setActiveMenu] = useState("");
-
-    const [activeFilter, setActiveFilter] = useState(null);
-    const [activeAnchorEl, setActiveAnchorEl] = useState(null);
-
-    const [filters, setFilters] = useState({
-        inStock: false,
-        fabric: "",
-        price: "",
-        size: "",
-        color: "",
-        brand: ""
-    });
-
-    const handleSelectCategory = (value) => {
-        setCategory(value);
-        handleClose();
-        onFilter({ category: value, inStock });
-    };
-
-
-    const handleFiltersCategory = (value) => {
-        setCategory(value);
-        handleClose();
-        onFilter({ category: value, inStock });
-    };
-
-
-
-    const handleOpen = (event) => setAnchorEl(event.currentTarget);
-
-    const handleClose = () => setAnchorEl(null);
-
-    const allFiltersDropDownOpen = (event, filterName) => {
-        setfilterAnchorEl(event.currentTarget);
-    }
-
-    const allFiltersDropDownClose = (event, filterName) => {
-        setfilterAnchorEl(null);
-    }
-
-
-    const handleFilterOpen = (event, filterName) => {
-        setActiveFilter(null);
-        setActiveAnchorEl(event.currentTarget);
-        setActiveFilter(filterName);
-    };
-
-    const handleFilterClose = () => {
-        setActiveAnchorEl(null);
-        setActiveFilter(null);
-    };
-
-
-
-    const handleSelect = (value) => {
-        setFilters((prev) => ({
-            ...prev,
-            [activeMenu]: value
-        }));
-        closeMenu();
-        // Notify parent with the updated filter value
-        onFilter({ category, inStock, ...filters, [activeMenu]: value });
-    };
-
-    const openMenu = (event, type) => {
-        setAnchor(event.currentTarget);
-        setActiveMenu(type);
-    };
-
-    const closeMenu = () => {
-        setAnchor(null);
-        setActiveMenu("");
-    };
-
-
-
-    const onFilter = (filters) => {
-        console.log("Applied Filters:", filters);
-    }
-
+    const hasActiveFilters = Boolean(category || inStock || sortBy);
+    let filterCategories = ['women']
     return (
-        <Box
-            sx={{
-                width: "100%",
-
-            }}
-        >
+        <Box sx={{ mb: 3 }}>
             <Stack
                 direction="row"
-                spacing={2}
+                spacing={1.5}
                 alignItems="center"
-
-                mt={3}
-                mb={3}
                 sx={{
                     overflowX: "auto",
                     whiteSpace: "nowrap",
-                    maxWidth: "100%",
                     pb: 1,
-
                     "&::-webkit-scrollbar": {
                         display: "none"
                     },
                     msOverflowStyle: "none",
                     scrollbarWidth: "none"
                 }}
-
             >
-
-                {/* Category Dropdown */}
                 <Button
                     variant="outlined"
                     endIcon={<ExpandMoreIcon />}
-                    onClick={handleOpen}
-                    sx={{
-                        flex: "0 0 auto", // 👈 KEY FIX
-                    }}
+                    onClick={(event) => setCategoryAnchorEl(event.currentTarget)}
+                    sx={{ flex: "0 0 auto" }}
                 >
-                    {"Category"}
-                </Button>
-
-                <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleClose}>
-                    <MenuItem onClick={() => handleSelectCategory("")}>All</MenuItem>
-                    <MenuItem onClick={() => handleSelectCategory("Pouch Bags")}>Pouch Bags</MenuItem>
-                    <MenuItem onClick={() => handleSelectCategory("Clutches")}>Clutches</MenuItem>
-                    <MenuItem onClick={() => handleSelectCategory("Mini Bags")}>Mini BAgs</MenuItem>
-                </Menu>
-
-                {/* Filter Button */}
-                <Button
-                    variant="outlined"
-                    startIcon={<TuneIcon />}
-                    onClick={allFiltersDropDownOpen}
-                    sx={{
-                        flex: "0 0 auto", // 👈 KEY FIX
-                    }}
-                >
-                    Filters
-                </Button>
-                <Menu anchorEl={filterAnchorEl} open={Boolean(filterAnchorEl)} onClose={allFiltersDropDownClose}>
-                    <MenuItem onClick={() => handleFiltersCategory("")}>All</MenuItem>
-                    <MenuItem onClick={() => handleFiltersCategory("InStock")}>InStock</MenuItem>
-                    <MenuItem onClick={() => handleFiltersCategory("Fabric")}>Fabric</MenuItem>
-                    <MenuItem onClick={() => handleFiltersCategory("Price")}>Price</MenuItem>
-                </Menu>
-
-
-
-                {/* In Stock Toggle */}
-                <FormControlLabel
-                    control={
-                        <Switch
-                            checked={inStock}
-                            onChange={(e) => {
-                                setInStock(e.target.checked);
-                                onFilter({ category, inStock: e.target.checked });
-                            }}
-                        />
-                    }
-                    label="In-stock"
-                />
-                {/* Filter buttons */}
-
-
-                <Button
-
-                    variant="outlined"
-                    onClick={(e) => handleFilterOpen(e, "fabric")}
-                    endIcon={<ExpandMoreIcon />}
-
-                    sx={{
-                        borderRadius: "20px",
-                        textTransform: "none",
-                        px: 2,
-                        py: 1,
-                        borderColor: "#ccc",
-                        color: "#333",
-                        backgroundColor: "#fff",
-                        flex: "0 0 auto", // 👈 KEY FIX
-                    }}
-
-                >
-                    Fabric
+                    {category || "Category"}
                 </Button>
 
                 <Menu
-                    anchorEl={activeAnchorEl}
-                    open={activeFilter === "fabric"}
-                    onClose={handleFilterClose}
-
+                    anchorEl={categoryAnchorEl}
+                    open={Boolean(categoryAnchorEl)}
+                    onClose={() => setCategoryAnchorEl(null)}
                 >
-                    <MenuItem onClick={() => handleSelect("")}>All</MenuItem>
-                    <MenuItem onClick={() => handleSelect("Electronics")}>Electronics</MenuItem>
-                    <MenuItem onClick={() => handleSelect("Clothes")}>Clothes</MenuItem>
-                </Menu>
-
-
-                <Button
-                    variant="outlined"
-                    endIcon={<ExpandMoreIcon />}
-                    onClick={(e) => handleFilterOpen(e, "price")}
-                    sx={{
-                        borderRadius: "20px",
-                        textTransform: "none",
-                        px: 2,
-                        py: 1,
-                        borderColor: "#ccc",
-                        color: "#333",
-                        backgroundColor: "#fff",
-                        flex: "0 0 auto", // 👈 KEY FIX
-                    }}
-                >
-                    Price
-                </Button>
-
-                <Menu anchorEl={activeAnchorEl} open={activeFilter === "price"} onClose={handleFilterClose}>
-                    <MenuItem onClick={() => handleSelect("0-50")}>$0 - $50</MenuItem>
-                </Menu>
-
-
-                <Button
-                    variant="outlined"
-                    endIcon={<ExpandMoreIcon />}
-                    onClick={(e) => handleFilterOpen(e, "size")}
-                    sx={{
-                        borderRadius: "20px",
-                        textTransform: "none",
-                        px: 2,
-                        py: 1,
-                        borderColor: "#ccc",
-                        color: "#333",
-                        backgroundColor: "#fff",
-                        flex: "0 0 auto", // 👈 KEY FIX
-                    }}
-                >
-                    Size
-                </Button>
-
-                <Menu anchorEl={activeAnchorEl} open={activeFilter === "size"} onClose={handleFilterClose}>
-                    <MenuItem onClick={() => handleSelect("S")}>S</MenuItem>
-                    <MenuItem onClick={() => handleSelect("M")}>M</MenuItem>
-                    <MenuItem onClick={() => handleSelect("L")}>L</MenuItem>
-                </Menu>
-
-
-                <Button
-                    variant="outlined"
-                    endIcon={<ExpandMoreIcon />}
-                    onClick={(e) => handleFilterOpen(e, "color")}
-                    sx={{
-                        borderRadius: "20px",
-                        textTransform: "none",
-                        px: 2,
-                        py: 1,
-                        borderColor: "#ccc",
-                        color: "#333",
-                        backgroundColor: "#fff",
-                        flex: "0 0 auto", // 👈 KEY FIX
-                    }}
-                >
-                    Color
-                </Button>
-
-
-                <Menu anchorEl={activeAnchorEl} open={activeFilter === "color"} onClose={handleFilterClose}>
-                    <MenuItem onClick={() => handleSelect("Red")}>Red</MenuItem>
-                    <MenuItem onClick={() => handleSelect("Blue")}>Blue</MenuItem>
-                </Menu>
-
-
-                <Button
-                    variant="outlined"
-                    endIcon={<ExpandMoreIcon />}
-                    onClick={(e) => handleFilterOpen(e, "brand")}
-                    sx={{
-                        borderRadius: "20px",
-                        textTransform: "none",
-                        px: 2,
-                        py: 1,
-                        borderColor: "#ccc",
-                        color: "#333",
-                        backgroundColor: "#fff",
-                        flex: "0 0 auto", // 👈 KEY FIX
-                    }}
-                >
-                    Brand
-                </Button>
-
-
-                <Menu anchorEl={activeAnchorEl} open={activeFilter === "brand"} onClose={handleFilterClose}>
-                    <MenuItem onClick={() => handleSelect("Nike")}>Nike</MenuItem>
-                    <MenuItem onClick={() => handleSelect("Adidas")}>Adidas</MenuItem>
-                </Menu>
-
-                {/* Active Filter Chips */}
-                {category && (
-                    <Chip
-                        label={`Category: ${category}`}
-                        onDelete={() => {
-                            setCategory("");
-                            onFilter({ category: "", inStock, ...filters });
+                    <MenuItem
+                        onClick={() => {
+                            onCategoryChange("");
+                            setCategoryAnchorEl(null);
                         }}
-                    />
-                )}
-                {Object.entries(filters).map(([key, value]) => {
-                    if (key !== "inStock" && value) {
-                        return (
-                            <Chip
-                                key={key}
-                                label={`${key.charAt(0).toUpperCase() + key.slice(1)}: ${value}`}
-                                onDelete={() => {
-                                    const newFilters = { ...filters, [key]: "" };
-                                    setFilters(newFilters);
-                                    onFilter({ category, inStock, ...newFilters });
-                                }}
-                            />
-                        );
+                    >
+                        All Categories
+                    </MenuItem>
+                    {filterCategories.map((item) => (
+                        <MenuItem
+                            key={item}
+                            onClick={() => {
+                                onCategoryChange(item);
+                                setCategoryAnchorEl(null);
+                            }}
+                        >
+                            {item}
+                        </MenuItem>
+                    ))}
+                </Menu>
+
+                <Button
+                    variant="outlined"
+                    startIcon={<TuneIcon />}
+                    endIcon={<ExpandMoreIcon />}
+                    onClick={(event) => setSortAnchorEl(event.currentTarget)}
+                    sx={{ flex: "0 0 auto" }}
+                >
+                    {sortBy === "price-asc"
+                        ? "Price: Low to High"
+                        : sortBy === "price-desc"
+                            ? "Price: High to Low"
+                            : "Sort"}
+                </Button>
+
+                <Menu
+                    anchorEl={sortAnchorEl}
+                    open={Boolean(sortAnchorEl)}
+                    onClose={() => setSortAnchorEl(null)}
+                >
+                    <MenuItem
+                        onClick={() => {
+                            onSortChange("");
+                            setSortAnchorEl(null);
+                        }}
+                    >
+                        Default
+                    </MenuItem>
+                    <MenuItem
+                        onClick={() => {
+                            onSortChange("price-asc");
+                            setSortAnchorEl(null);
+                        }}
+                    >
+                        Price: Low to High
+                    </MenuItem>
+                    <MenuItem
+                        onClick={() => {
+                            onSortChange("price-desc");
+                            setSortAnchorEl(null);
+                        }}
+                    >
+                        Price: High to Low
+                    </MenuItem>
+                </Menu>
+
+                <FormControlLabel
+                    sx={{ ml: 0.5, flex: "0 0 auto" }}
+                    control={
+                        <Switch
+                            checked={inStock}
+                            onChange={(event) => onInStockChange(event.target.checked)}
+                        />
                     }
-                    return null;
-                })}
+                    label="In Stock"
+                />
+
+                {hasActiveFilters && (
+                    <Button
+                        color="inherit"
+                        onClick={onClearFilters}
+                        sx={{ flex: "0 0 auto" }}
+                    >
+                        Clear
+                    </Button>
+                )}
             </Stack>
+
+            {hasActiveFilters && (
+                <Typography sx={{ mt: 1, color: "text.secondary", fontSize: 14 }}>
+                    Showing products matching your current filters.
+                </Typography>
+            )}
         </Box>
     );
 };

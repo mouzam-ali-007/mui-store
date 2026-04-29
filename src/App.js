@@ -4,17 +4,12 @@ import { Provider } from 'react-redux';
 import { store } from './store';
 import Navbar from "./components/Navbar";
 import Home from "./pages/Home";
-import Contact from "./pages/Contact";
 import ProductDetailsPage from "./components/ProductDetailsPage";
 import Footer from "./components/Footer";
 import SideBar from "./components/SideBar";
 import { Box } from "@mui/material";
 import CarousalComponent from "./components/carousal";
-import ProductCard from "./components/ProductCard";
-
-import FilterProduct from "./components/FilterProduct";
-
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import AuthPage from "./components/AuthPage"; // your login/signup page
 import { supabase } from "./services/data.service"; // your Supabase client
 import ComingSoon from "./components/CommingSoon";
@@ -35,8 +30,7 @@ const HomePage = () => (
 
 function App() {
   const [mobileOpen, setMobileOpen] = useState(false);
-  const [user, setUser] = useState(null);
-  const [checkoutOpen, setCheckoutOpen] = useState(false);
+  const [, setUser] = useState(null);
 
 
   // Check session on mount
@@ -78,7 +72,7 @@ function App() {
             element={
               (
                 <>
-                  <Navbar setMobileOpen={setMobileOpen} setCheckoutOpen={setCheckoutOpen} />
+                  <Navbar setMobileOpen={setMobileOpen} />
 
                   <Box sx={{ display: "flex" }}>
                     <SideBar mobileOpen={mobileOpen} setMobileOpen={setMobileOpen} />
@@ -109,4 +103,3 @@ function App() {
 }
 
 export default App;
-
