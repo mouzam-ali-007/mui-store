@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { Grid, Container, Typography } from "@mui/material";
+import { Box, Grid, Container, Typography } from "@mui/material";
 import ProductCard from "../components/ProductCard";
 import { getProducts, signIn } from "../services/data.service";
 import { LinearProgress } from "@mui/material";
@@ -15,6 +15,7 @@ const Home = () => {
     const selectedCategory = searchParams.get("category") || "";
     const inStockOnly = searchParams.get("inStock") === "true";
     const sortBy = searchParams.get("sort") || "";
+    const hasActiveFilters = Boolean(searchTerm || selectedCategory || inStockOnly || sortBy);
 
     const updateFilterParam = (key, value) => {
         const nextParams = new URLSearchParams(searchParams);
@@ -105,6 +106,11 @@ const Home = () => {
         return filtered;
     }, [inStockOnly, savedProducts, searchTerm, selectedCategory, sortBy]);
 
+    const bestCollectionProducts = useMemo(
+        () => savedProducts.slice(0, 4),
+        [savedProducts]
+    );
+
 
 
     return (
@@ -122,6 +128,8 @@ const Home = () => {
                 />
             )}
             <Container sx={{ mt: 15 }}>
+
+
                 <FilterProduct
                     category={selectedCategory}
                     categories={categories}
@@ -139,9 +147,13 @@ const Home = () => {
                     }}
                 />
 
-                <Grid container spacing={3}>
+                <Typography variant="h5" sx={{ fontWeight: 700, mb: 3 }}>
+                    All Products
+                </Typography>
+
+                <Grid container spacing={{ xs: 2, sm: 3 }}>
                     {filteredProducts.map((product) => (
-                        <Grid item key={product.id} xs={6} sm={6} md={3} lg={2}>
+                        <Grid item key={product.id} xs={6} sm={6} md={3} lg={2} sx={{ display: "flex" }}>
                             <ProductCard product={product} />
                         </Grid>
                     ))}
@@ -151,6 +163,30 @@ const Home = () => {
                     <Typography sx={{ mt: 4, textAlign: "center", color: "text.secondary" }}>
                         No products matched your search or filters.
                     </Typography>
+                )}
+
+                {!hasActiveFilters && bestCollectionProducts.length > 0 && (
+                    <Box sx={{ mb: 6, mt: 6 }}>
+                        <Typography
+                            variant="h4"
+                            sx={{ fontWeight: 700, textAlign: "center", mb: 1 }}
+                        >
+                            Our Best Collection
+                        </Typography>
+                        <Typography
+                            sx={{ textAlign: "center", color: "text.secondary", mb: 4 }}
+                        >
+                            A curated selection of four standout pieces from our latest range.
+                        </Typography>
+
+                        <Grid container spacing={{ xs: 2, sm: 3 }}>
+                            {bestCollectionProducts.map((product) => (
+                                <Grid item key={`best-${product.id}`} xs={6} sm={6} md={3} sx={{ display: "flex" }}>
+                                    <ProductCard product={product} />
+                                </Grid>
+                            ))}
+                        </Grid>
+                    </Box>
                 )}
 
 
