@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import {
     Card,
     CardMedia,
@@ -10,7 +10,6 @@ import {
 } from "@mui/material";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import ShoppingBagOutlinedIcon from "@mui/icons-material/ShoppingBagOutlined";
-import { Link } from "react-router-dom";
 import ProductModal from "./ProductModal";
 import { useNavigate } from "react-router-dom";
 

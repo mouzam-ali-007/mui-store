@@ -12,33 +12,59 @@ import {
   Menu,
   useMediaQuery,
   useTheme,
-  Badge,
-  Drawer,
-  Button
+  Badge
 } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import ShoppingBagOutlinedIcon from "@mui/icons-material/ShoppingBagOutlined";
 import MenuIcon from "@mui/icons-material/Menu";
 import ShoppingBag from "./ShoppingBag";
 import { useAppSelector } from '../store/hooks';
+import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 
 const Navbar = ({ setMobileOpen }) => {
   const [anchorEl, setAnchorEl] = useState(null);
   const [currency, setCurrency] = useState("PKR");
   const [bagOpen, setBagOpen] = useState(false);
   const [country] = useState("Pakistan");
-
-  const [checkoutOpen, setCheckoutOpen] = useState(false);
-
+  const [searchInput, setSearchInput] = useState("");
 
   const cartItemsCount = useAppSelector((state) => state.cart.items.reduce((sum, item) => sum + item.quantity, 0));
-
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
   const open = Boolean(anchorEl);
+  const location = useLocation();
+  const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const selectedCategory = searchParams.get("category") || "All";
 
   const handleOpen = (event) => setAnchorEl(event.currentTarget);
   const handleClose = () => setAnchorEl(null);
+
+  React.useEffect(() => {
+    setSearchInput(searchParams.get("q") || "");
+  }, [searchParams]);
+
+  const updateSearchParams = (updates) => {
+    const nextParams = new URLSearchParams(searchParams);
+
+    Object.entries(updates).forEach(([key, value]) => {
+      if (!value || value === "All") {
+        nextParams.delete(key);
+      } else {
+        nextParams.set(key, value);
+      }
+    });
+
+    if (location.pathname !== "/") {
+      navigate({
+        pathname: "/",
+        search: nextParams.toString() ? `?${nextParams.toString()}` : ""
+      });
+      return;
+    }
+
+    setSearchParams(nextParams);
+  };
 
   const searchBar = (
     <Box
@@ -53,20 +79,27 @@ const Navbar = ({ setMobileOpen }) => {
       }}
     >
       <Select
-        defaultValue="All"
+        value={selectedCategory}
         variant="standard"
         disableUnderline
         sx={{ mr: 2 }}
+        onChange={(event) => updateSearchParams({ category: event.target.value })}
       >
         <MenuItem value="All">All</MenuItem>
-        <MenuItem value="Clothes">Men</MenuItem>
-        <MenuItem value="Shoes">Women</MenuItem>
-        <MenuItem value="kids">Kids</MenuItem>
+        <MenuItem value="Headphone">Headphone</MenuItem>
+        <MenuItem value="Mouse">Mouse</MenuItem>
+        <MenuItem value="Speakers">Speakers</MenuItem>
       </Select>
 
       <InputBase
         placeholder='Search for "red wedding dress"'
         sx={{ flex: 1 }}
+        value={searchInput}
+        onChange={(event) => {
+          const value = event.target.value;
+          setSearchInput(value);
+          updateSearchParams({ q: value.trim() });
+        }}
       />
 
       <SearchIcon />
@@ -139,7 +172,7 @@ const Navbar = ({ setMobileOpen }) => {
             </Badge>
           </IconButton>
 
-          <ShoppingBag bagOpen={bagOpen} setBagOpen={setBagOpen} setCheckoutOpen={setCheckoutOpen} />
+          <ShoppingBag bagOpen={bagOpen} setBagOpen={setBagOpen} />
 
         </Box>
       </Toolbar>
