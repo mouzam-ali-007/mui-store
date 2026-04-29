@@ -5,24 +5,16 @@ import {
   ListItemButton,
   ListItemText,
   Collapse,
-  useMediaQuery,
-  useTheme
 } from "@mui/material";
 import ExpandLess from "@mui/icons-material/ExpandLess";
 import ExpandMore from "@mui/icons-material/ExpandMore";
 import { getUserSession, signOut } from "../services/data.service";
 import { useNavigate } from "react-router-dom";
-
-
 const SideBar = ({ mobileOpen, setMobileOpen }) => {
   const [openWomen, setOpenWomen] = useState(false);
   const [user, setUser] = useState(true);
 
-
   const navigate = useNavigate();
-
-  const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
 
   const handleWomenClick = () => {
     setOpenWomen(!openWomen);
@@ -55,12 +47,18 @@ const SideBar = ({ mobileOpen, setMobileOpen }) => {
 
   const drawerContent = (
     <List sx={{ padding: "20px" }}>
-      <ListItemButton>
-        <ListItemText primary="All" onClick={() => navigate("/")} />
+      <ListItemButton onClick={() => {
+        navigate("/");
+        setMobileOpen(false);
+      }}>
+        <ListItemText primary="All" />
       </ListItemButton>
 
-      <ListItemButton>
-        <ListItemText primary="Men" onClick={() => navigate("/comingsoon")} />
+      <ListItemButton onClick={() => {
+        navigate("/comingsoon");
+        setMobileOpen(false);
+      }}>
+        <ListItemText primary="Men" />
       </ListItemButton>
 
 
@@ -82,15 +80,24 @@ const SideBar = ({ mobileOpen, setMobileOpen }) => {
 
       <Collapse in={openWomen} timeout="auto" unmountOnExit>
         <List component="div" disablePadding>
-          <ListItemButton sx={{ pl: 4 }} onClick={() => navigate("/women")}>
+          <ListItemButton sx={{ pl: 4 }} onClick={() => {
+            navigate("/women");
+            setMobileOpen(false);
+          }}>
             <ListItemText primary="Pouch Bags" />
           </ListItemButton>
 
-          <ListItemButton sx={{ pl: 4 }} onClick={() => navigate("/women")}>
+          <ListItemButton sx={{ pl: 4 }} onClick={() => {
+            navigate("/women");
+            setMobileOpen(false);
+          }}>
             <ListItemText primary="Clutches" />
           </ListItemButton>
 
-          <ListItemButton sx={{ pl: 4 }} onClick={() => navigate("/women")}>
+          <ListItemButton sx={{ pl: 4 }} onClick={() => {
+            navigate("/women");
+            setMobileOpen(false);
+          }}>
             <ListItemText primary="Mini Bags" />
           </ListItemButton>
 
@@ -98,8 +105,11 @@ const SideBar = ({ mobileOpen, setMobileOpen }) => {
         </List>
       </Collapse>
 
-      <ListItemButton>
-        <ListItemText primary="Kids" onClick={() => navigate("/comingsoon")} />
+      <ListItemButton onClick={() => {
+        navigate("/comingsoon");
+        setMobileOpen(false);
+      }}>
+        <ListItemText primary="Kids" />
       </ListItemButton>
 
       {user && <ListItemButton
@@ -117,41 +127,19 @@ const SideBar = ({ mobileOpen, setMobileOpen }) => {
   );
 
   return (
-    <>
-      {/* Mobile Drawer */}
-      {isMobile ? (
-        <Drawer
-          variant="temporary"
-          open={mobileOpen}
-          onClose={() => setMobileOpen(false)}
-          sx={{
-            "& .MuiDrawer-paper": {
-              width: 260,
-            }
-          }}
-        >
-          {drawerContent}
-        </Drawer>
-      ) : (
-        /* Desktop Drawer */
-        <Drawer
-          variant="permanent"
-          anchor="left"
-          sx={{
-            width: 260,
-            flexShrink: 0,
-            "& .MuiDrawer-paper": {
-              width: 260,
-              boxSizing: "border-box",
-              padding: "20px",
-              top: "64px",
-            }
-          }}
-        >
-          {drawerContent}
-        </Drawer>
-      )}
-    </>
+    <Drawer
+      variant="temporary"
+      anchor="left"
+      open={mobileOpen}
+      onClose={() => setMobileOpen(false)}
+      sx={{
+        "& .MuiDrawer-paper": {
+          width: 260,
+        }
+      }}
+    >
+      {drawerContent}
+    </Drawer>
   );
 };
 

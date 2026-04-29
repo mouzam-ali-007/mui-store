@@ -113,11 +113,9 @@ const Navbar = ({ setMobileOpen }) => {
       <Toolbar sx={{ display: "flex", justifyContent: "space-between", flexWrap: "wrap" }}>
         {/* LEFT: Logo + Mobile Menu */}
         <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
-          {isMobile && (
-            <IconButton onClick={() => setMobileOpen(true)}>
-              <MenuIcon />
-            </IconButton>
-          )}
+          <IconButton onClick={() => setMobileOpen(true)}>
+            <MenuIcon />
+          </IconButton>
           <Typography variant="h6" fontWeight="bold">
             LUMA DEVAUX
           </Typography>
