@@ -31,19 +31,30 @@ const ProductCard = ({ product }) => {
                 overflow: "hidden",
                 boxShadow: 1,
                 position: "relative",
+                transition: "transform 0.25s ease, box-shadow 0.25s ease",
+                "&:hover": {
+                    transform: "translateY(-6px)",
+                    boxShadow: 6,
+                },
+                "&:hover .product-card-image": {
+                    transform: "scale(1.05)",
+                },
             }}
         >
             {/* IMAGE SECTION */}
-            <Box sx={{ position: "relative" }}>
+            <Box sx={{ position: "relative", overflow: "hidden" }}>
                 <CardMedia
                     component="img"
                     image={product.image}
                     alt={product.name}
                     onClick={() => navigate(`/product/${product.id}`)}
+                    className="product-card-image"
                     sx={{
                         width: "100%",
                         height: 300,
                         objectFit: "cover",
+                        transition: "transform 0.35s ease",
+                        cursor: "pointer",
                     }}
                 />
 
@@ -75,6 +86,11 @@ const ProductCard = ({ product }) => {
                         top: 10,
                         right: 10,
                         bgcolor: "#fff",
+                        transition: "transform 0.2s ease, background-color 0.2s ease",
+                        "&:hover": {
+                            transform: "scale(1.08)",
+                            bgcolor: "#f8f8f8",
+                        },
                     }}
                 >
                     <FavoriteBorderIcon />
@@ -143,6 +159,11 @@ const ProductCard = ({ product }) => {
                     right: 10,
                     bgcolor: "#fff",
                     boxShadow: 1,
+                    transition: "transform 0.2s ease, background-color 0.2s ease",
+                    "&:hover": {
+                        transform: "scale(1.08)",
+                        bgcolor: "#f8f8f8",
+                    },
                 }}
             >
                 <ShoppingBagOutlinedIcon />
