@@ -86,9 +86,7 @@ const Navbar = ({ setMobileOpen }) => {
         onChange={(event) => updateSearchParams({ category: event.target.value })}
       >
         <MenuItem value="All">All</MenuItem>
-        <MenuItem value="Headphone">Headphone</MenuItem>
-        <MenuItem value="Mouse">Mouse</MenuItem>
-        <MenuItem value="Speakers">Speakers</MenuItem>
+        <MenuItem value="women">Women</MenuItem>
       </Select>
 
       <InputBase
