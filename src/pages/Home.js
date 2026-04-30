@@ -164,7 +164,7 @@ const Home = () => {
                 )}
 
                 {!hasActiveFilters && bestCollectionProducts.length > 0 && (
-                    <Box sx={{ mb: 6, mt: 6 }}>
+                    <Box sx={{ mb: 60, mt: 6 }}>
                         <Typography
                             variant="h4"
                             sx={{ fontWeight: 700, textAlign: "center", mb: 1 }}

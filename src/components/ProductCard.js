@@ -30,8 +30,10 @@ const ProductCard = ({ product }) => {
                 borderRadius: 0,
                 overflow: "hidden",
                 boxShadow: 1,
-
                 position: "relative",
+                display: "flex",
+                flexDirection: "column",
+                height: "100%",
                 transition: "transform 0.25s ease, box-shadow 0.25s ease",
                 "&:hover": {
                     transform: "translateY(-6px)",
@@ -61,9 +63,9 @@ const ProductCard = ({ product }) => {
                     onClick={() => navigate(`/product/${product.id}`)}
                     className="product-card-image"
                     sx={{
-                        width: "200%",
+                        width: "100%",
                         height: "100%",
-                        objectFit: "cover", //  key line
+                        objectFit: "cover",
                         transition: "transform 0.35s ease",
                         cursor: "pointer",
                     }}
@@ -71,7 +73,14 @@ const ProductCard = ({ product }) => {
             </Box>
 
             {/* CONTENT */}
-            <CardContent sx={{ p: 1.5 }}>
+            <CardContent
+                sx={{
+                    p: 1.5,
+                    pb: 6,
+                    flexGrow: 1,
+                    borderTop: "1px solid #ece6db",
+                }}
+            >
                 {/* Price */}
                 <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
                     <Typography sx={{ color: "red", fontWeight: 700 }}>
@@ -97,13 +106,14 @@ const ProductCard = ({ product }) => {
                         fontSize: 14,
                         mt: 0.5,
                         color: "#555",
+                        minHeight: 38,
                     }}
                 >
                     {product.brand} • {product.name}
                 </Typography>
 
                 {/* Tags */}
-                <Box sx={{ mt: 1, display: "flex", gap: 1 }}>
+                <Box sx={{ mt: 1, display: "flex", gap: 1, flexWrap: "wrap" }}>
                     {product.express && (
                         <Chip
                             label="Express"
