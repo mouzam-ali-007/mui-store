@@ -27,10 +27,10 @@ const ProductCard = ({ product }) => {
     return (
         <Card
             sx={{
-                borderRadius: 3,
+                borderRadius: 0,
                 overflow: "hidden",
                 boxShadow: 1,
-                borderRadius: '0px',
+
                 position: "relative",
                 transition: "transform 0.25s ease, box-shadow 0.25s ease",
                 "&:hover": {
@@ -43,7 +43,17 @@ const ProductCard = ({ product }) => {
             }}
         >
             {/* IMAGE SECTION */}
-            <Box sx={{ position: "relative", overflow: "hidden" }}>
+            <Box
+                sx={{
+                    width: "100%",
+                    height: 300,
+                    overflow: "hidden",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    bgcolor: "#f5f5f5", // optional background for empty space
+                }}
+            >
                 <CardMedia
                     component="img"
                     image={product.image}
@@ -51,52 +61,13 @@ const ProductCard = ({ product }) => {
                     onClick={() => navigate(`/product/${product.id}`)}
                     className="product-card-image"
                     sx={{
-                        width: "100%",
-                        height: 300,
-                        objectFit: "cover",
+                        width: "200%",
+                        height: "100%",
+                        objectFit: "cover", //  key line
                         transition: "transform 0.35s ease",
                         cursor: "pointer",
                     }}
                 />
-
-                {/* Discount Badge */}
-                {product.discount && (
-                    <Box
-                        sx={{
-                            position: "absolute",
-                            top: 10,
-                            left: 10,
-                            bgcolor: "red",
-                            color: "#fff",
-                            px: 1.2,
-                            py: 0.5,
-                            borderRadius: 1,
-                            fontSize: 12,
-                            fontWeight: 600,
-                        }}
-                    >
-                        -{product.discount}%
-                    </Box>
-                )}
-
-                {/* Wishlist Icon */}
-                <IconButton
-
-                    sx={{
-                        position: "absolute",
-                        top: 10,
-                        right: 10,
-                        bgcolor: "#fff",
-                        transition: "transform 0.2s ease, background-color 0.2s ease",
-                        "&:hover": {
-                            transform: "scale(1.08)",
-                            bgcolor: "#f8f8f8",
-                        },
-                    }}
-                >
-                    <FavoriteBorderIcon />
-                </IconButton>
-
             </Box>
 
             {/* CONTENT */}
