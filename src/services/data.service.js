@@ -1,9 +1,12 @@
 import { createClient } from '@supabase/supabase-js'
 
 
-let url = 'https://hrjxxzzumohxrhrmflxk.supabase.co'
+const url = process.env.REACT_APP_SUPABASE_URL
+const anon_key = process.env.REACT_APP_SUPABASE_ANON_KEY
 
-let anon_key = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imhyanh4enp1bW9oeHJocm1mbHhrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUyNjgwNzcsImV4cCI6MjA5MDg0NDA3N30.0Gw8I2hVgMQmfHSoCw057WkOz4JslLdS1ZmxsuVyT38'
+if (!url || !anon_key) {
+    throw new Error("Missing Supabase environment variables. Set REACT_APP_SUPABASE_URL and REACT_APP_SUPABASE_ANON_KEY.");
+}
 
 
 export const supabase = createClient(url, anon_key)
@@ -30,8 +33,6 @@ export const loginWithPhone = async (phone) => {
     if (error) throw error;
     return data;
 };
-
-
 // User sign-in
 export async function signIn() {
     let email = "mouzamsaleem007@gmail.com";
@@ -40,6 +41,7 @@ export async function signIn() {
     if (error) throw error
     return data.user
 }
+
 
 // User sign-out
 export async function signOut() {
@@ -193,4 +195,3 @@ export async function placeOrder(orderData) {
 //         console.log(71, error);
 //     }
 // }
-

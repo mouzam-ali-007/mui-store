@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { Box, Grid, Container, Typography } from "@mui/material";
 import ProductCard from "../components/ProductCard";
-import { getProducts, signIn } from "../services/data.service";
+import { getProducts } from "../services/data.service";
 import { LinearProgress } from "@mui/material";
 import FilterProduct from "../components/FilterProduct";
 import { useSearchParams } from "react-router-dom";
@@ -36,8 +36,6 @@ const Home = () => {
     }, []);
 
     useEffect(() => {
-        signIn().then(() => {
-        });
         getProducts().then((data) => {
             if (!data) {
                 setStoredProducts([]);

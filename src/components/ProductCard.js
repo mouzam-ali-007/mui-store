@@ -30,6 +30,7 @@ const ProductCard = ({ product }) => {
                 borderRadius: 3,
                 overflow: "hidden",
                 boxShadow: 1,
+                borderRadius: '0px',
                 position: "relative",
                 transition: "transform 0.25s ease, box-shadow 0.25s ease",
                 "&:hover": {

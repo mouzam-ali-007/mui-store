@@ -6,7 +6,7 @@ const categories = [
     { title: "Women", image: "/womens.avif", path: "/women" },
     { title: "Men", image: "/mens.avif", path: "/comingsoon" },
     { title: "Kids", image: "/kids.jpg", path: "/comingsoon" },
-    { title: "Western Wear", image: "/speakers.jpg", path: "/comingsoon" }, // temp
+
 ];
 
 const ShopStores = () => {
