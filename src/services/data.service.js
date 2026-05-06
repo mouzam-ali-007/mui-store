@@ -35,8 +35,8 @@ export const loginWithPhone = async (phone) => {
 };
 // User sign-in
 export async function signIn() {
-    let email = "mouzamsaleem007@gmail.com";
-    let password = "@mouzam2026"
+    let email = "ali@gmail.com";
+    let password = "ali@123"
     const { data, error } = await supabase.auth.signInWithPassword({ email, password })
     if (error) throw error
     return data.user
