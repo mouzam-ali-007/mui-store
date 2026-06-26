@@ -45,6 +45,15 @@ const cartSlice = createSlice({
         },
 
         removeItem: (state, action) => {
+            if (typeof action.payload === "object" && action.payload !== null) {
+                const { id, size } = action.payload;
+                state.items = state.items.filter(
+                    (item) => !(item.id === id && item.size === size)
+                );
+                saveCartToStorage(state.items);
+                return;
+            }
+
             state.items = state.items.filter(
                 (item) => item.id !== action.payload
             );

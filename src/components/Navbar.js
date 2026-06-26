@@ -1,44 +1,23 @@
-// components/Navbar.js
 import React, { useState } from "react";
-import {
-  AppBar,
-  Toolbar,
-  Box,
-  Typography,
-  InputBase,
-  Select,
-  MenuItem,
-  IconButton,
-  Menu,
-  useMediaQuery,
-  useTheme,
-  Badge
-} from "@mui/material";
-import SearchIcon from "@mui/icons-material/Search";
-import ShoppingBagOutlinedIcon from "@mui/icons-material/ShoppingBagOutlined";
-import MenuIcon from "@mui/icons-material/Menu";
 import ShoppingBag from "./ShoppingBag";
-import { useAppSelector } from '../store/hooks';
+import { useAppSelector } from "../store/hooks";
 import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
+import { BagIcon, ChevronDownIcon, MenuIcon, SearchIcon } from "./Icons";
 
 const Navbar = ({ setMobileOpen }) => {
-  const [anchorEl, setAnchorEl] = useState(null);
+  const [currencyMenuOpen, setCurrencyMenuOpen] = useState(false);
   const [currency, setCurrency] = useState("PKR");
   const [bagOpen, setBagOpen] = useState(false);
   const [country] = useState("Pakistan");
   const [searchInput, setSearchInput] = useState("");
 
-  const cartItemsCount = useAppSelector((state) => state.cart.items.reduce((sum, item) => sum + item.quantity, 0));
-  const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
-  const open = Boolean(anchorEl);
+  const cartItemsCount = useAppSelector((state) =>
+    state.cart.items.reduce((sum, item) => sum + item.quantity, 0)
+  );
   const location = useLocation();
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
   const selectedCategory = searchParams.get("category") || "All";
-
-  const handleOpen = (event) => setAnchorEl(event.currentTarget);
-  const handleClose = () => setAnchorEl(null);
 
   React.useEffect(() => {
     setSearchInput(searchParams.get("q") || "");
@@ -58,7 +37,7 @@ const Navbar = ({ setMobileOpen }) => {
     if (location.pathname !== "/") {
       navigate({
         pathname: "/",
-        search: nextParams.toString() ? `?${nextParams.toString()}` : ""
+        search: nextParams.toString() ? `?${nextParams.toString()}` : "",
       });
       return;
     }
@@ -66,113 +45,113 @@ const Navbar = ({ setMobileOpen }) => {
     setSearchParams(nextParams);
   };
 
-  const searchBar = (
-    <Box
-      sx={{
-        display: "flex",
-        alignItems: "center",
-        background: "#f5f5f5",
-        borderRadius: "30px",
-        px: 2,
-        width: isMobile ? "100%" : "50%",
-        mt: isMobile ? 1 : 0,
-      }}
-    >
-      <Select
-        value={selectedCategory}
-        variant="standard"
-        disableUnderline
-        sx={{ mr: 2 }}
-        onChange={(event) => updateSearchParams({ category: event.target.value })}
-      >
-        <MenuItem value="All">All</MenuItem>
-        <MenuItem value="women">Women</MenuItem>
-      </Select>
-
-      <InputBase
-        placeholder='Search for "red wedding dress"'
-        sx={{ flex: 1 }}
-        value={searchInput}
-        onChange={(event) => {
-          const value = event.target.value;
-          setSearchInput(value);
-          updateSearchParams({ q: value.trim() });
-        }}
-      />
-
-      <SearchIcon />
-    </Box>
-  );
-
   return (
-    <AppBar
-      position="fixed"
-      elevation={0}
-      sx={{ background: "#fff", color: "#000", borderBottom: "1px solid #eee", px: 2 }}
-    >
-      <Toolbar sx={{ display: "flex", justifyContent: "space-between", flexWrap: "wrap" }}>
-        {/* LEFT: Logo + Mobile Menu */}
-        <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
-          <IconButton onClick={() => setMobileOpen(true)}>
-            <MenuIcon />
-          </IconButton>
-          <Typography variant="h6" fontWeight="bold">
-            LUMA DEVAUX
-          </Typography>
-        </Box>
-
-        {/* SEARCH */}
-        {isMobile ? searchBar : null}
-
-        {/* DESKTOP: show search bar */}
-        {!isMobile && searchBar}
-
-        {/* RIGHT: Deliver / Cart */}
-        <Box display="flex" alignItems="center" gap={3}>
-          <Box onClick={handleOpen} sx={{ cursor: "pointer", textAlign: "right" }}>
-            <Typography variant="caption" color="gray">
-              Deliver To / Currency
-            </Typography>
-            <Typography variant="body2" fontWeight="bold">
-              PK / {currency}
-            </Typography>
-          </Box>
-
-          <Menu
-            anchorEl={anchorEl}
-            open={open}
-            onClose={handleClose}
-            PaperProps={{ sx: { p: 2, width: 220, borderRadius: 3 } }}
+    <header className="site-header">
+      <div className="topbar">
+        <div className="topbar__brand-row">
+          <button
+            type="button"
+            className="icon-button icon-button--menu"
+            onClick={() => setMobileOpen(true)}
+            aria-label="Open navigation"
           >
-            <Typography variant="subtitle2" mb={1}>Country</Typography>
-            <Typography sx={{ background: "#f5f5f5", p: 1, borderRadius: 1, mb: 2 }}>
-              {country}
-            </Typography>
+            <MenuIcon className="icon-button__icon" />
+          </button>
 
-            <Typography variant="subtitle2" mb={1}>Currency</Typography>
-            <Select
-              fullWidth
-              value={currency}
-              onChange={(e) => setCurrency(e.target.value)}
-              size="small"
+          <button type="button" className="site-brand" onClick={() => navigate("/")}>
+            LUMA DEVAUX
+          </button>
+        </div>
+
+        <div className="topbar__search">
+          <label className="visually-hidden" htmlFor="navbar-category">
+            Browse category
+          </label>
+          <select
+            id="navbar-category"
+            className="topbar__select"
+            value={selectedCategory}
+            onChange={(event) => updateSearchParams({ category: event.target.value })}
+          >
+            <option value="All">All</option>
+            <option value="women">Women</option>
+          </select>
+
+          <label className="visually-hidden" htmlFor="navbar-search">
+            Search products
+          </label>
+          <input
+            id="navbar-search"
+            className="topbar__input"
+            placeholder='Search for "red wedding dress"'
+            value={searchInput}
+            onChange={(event) => {
+              const value = event.target.value;
+              setSearchInput(value);
+              updateSearchParams({ q: value.trim() });
+            }}
+          />
+          <SearchIcon className="topbar__search-icon" />
+        </div>
+
+        <div className="topbar__actions">
+          <div className="topbar__menu-wrap">
+            <button
+              type="button"
+              className="topbar__delivery"
+              onClick={() => setCurrencyMenuOpen((current) => !current)}
             >
-              <MenuItem value="PKR">PKR</MenuItem>
-              <MenuItem value="USD">USD</MenuItem>
-              <MenuItem value="SAR">SAR</MenuItem>
-            </Select>
-          </Menu>
+              <span className="topbar__eyebrow">Deliver To / Currency</span>
+              <span className="topbar__delivery-value">
+                PK / {currency}
+                <ChevronDownIcon className="topbar__chevron" />
+              </span>
+            </button>
 
-          <IconButton onClick={() => setBagOpen(true)}>
-            <Badge badgeContent={cartItemsCount} color="primary" max={99}>
-              <ShoppingBagOutlinedIcon />
-            </Badge>
-          </IconButton>
+            {currencyMenuOpen && (
+              <div className="floating-menu">
+                <p className="floating-menu__label">Country</p>
+                <div className="floating-menu__value">{country}</div>
+
+                <label className="floating-menu__label" htmlFor="currency-select">
+                  Currency
+                </label>
+                <select
+                  id="currency-select"
+                  className="field-control"
+                  value={currency}
+                  onChange={(event) => setCurrency(event.target.value)}
+                >
+                  <option value="PKR">PKR</option>
+                  <option value="USD">USD</option>
+                  <option value="SAR">SAR</option>
+                </select>
+
+                <button
+                  type="button"
+                  className="button button--ghost button--full"
+                  onClick={() => setCurrencyMenuOpen(false)}
+                >
+                  Done
+                </button>
+              </div>
+            )}
+          </div>
+
+          <button
+            type="button"
+            className="icon-button icon-button--bag"
+            onClick={() => setBagOpen(true)}
+            aria-label="Open shopping bag"
+          >
+            <span className="cart-badge">{cartItemsCount > 99 ? "99+" : cartItemsCount}</span>
+            <BagIcon className="icon-button__icon" />
+          </button>
 
           <ShoppingBag bagOpen={bagOpen} setBagOpen={setBagOpen} />
-
-        </Box>
-      </Toolbar>
-    </AppBar>
+        </div>
+      </div>
+    </header>
   );
 };
 

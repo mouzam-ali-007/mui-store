@@ -1,34 +1,35 @@
-import React, { use, useEffect, useState } from "react";
-import { useParams, Link } from "react-router-dom";
-import { Container, Button, Box } from "@mui/material";
-import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import React, { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 import ProductDetails from "./ProductDetails";
-import { products } from "../data/products";
 import { getProductById } from "../services/data.service";
+import { formatProduct } from "../utils/product";
 
 const ProductDetailsPage = () => {
   const { id } = useParams();
-  const [product, setProduct] = useState();
+  const [product, setProduct] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    let isMounted = true;
 
     getProductById(id).then((data) => {
-      setProduct(data)
+      if (!isMounted) {
+        return;
+      }
 
-    })
-  }, [id])
-  // Find product by id from URL params
+      setProduct(formatProduct(data));
+      setLoading(false);
+    });
 
-  let user = JSON.parse(sessionStorage.getItem("user"))
+    return () => {
+      isMounted = false;
+    };
+  }, [id]);
 
   return (
-    <Container sx={{ mt: 5, mb: 10 }}>
-      {/* Back button */}
-
-
-      {/* Product Details Component */}
-      <ProductDetails product={product} user={user} />
-    </Container>
+    <div className="page-section">
+      <ProductDetails product={product} loading={loading} />
+    </div>
   );
 };
 

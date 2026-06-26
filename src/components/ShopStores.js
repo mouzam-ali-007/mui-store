@@ -1,71 +1,45 @@
 import React from "react";
-import { Box, Grid, Typography, Card, CardMedia } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 
 const categories = [
-    { title: "Women", image: "/womens.avif", path: "/women" },
-    { title: "Men", image: "/mens.avif", path: "/comingsoon" },
-    { title: "Kids", image: "/kids.jpg", path: "/comingsoon" },
-
+  { title: "Women", image: "/womens.avif", path: "/women" },
+  { title: "Men", image: "/mens.avif", path: "/comingsoon" },
+  { title: "Kids", image: "/kids.jpg", path: "/comingsoon" },
 ];
 
 const ShopStores = () => {
-    const navigate = useNavigate();
-    return (
-        <Box sx={{ padding: "40px 20px", textAlign: "center" }}>
+  const navigate = useNavigate();
 
-            {/* Title */}
-            <Typography
-                variant="h4"
-                fontWeight="bold"
-                mb={4}
-            >
-                Shop Our Stores
-            </Typography>
+  return (
+    <section className="store-grid-section">
+      <div className="store-grid-section__header">
+        <p className="section-label">Shop Our Stores</p>
+        <h2>Browse by collection</h2>
+      </div>
 
-            {/* Grid */}
-            <Grid container spacing={3} justifyContent="center">
-                {categories.map((item, index) => (
-                    <Grid item xs={6} sm={4} md={2} key={index}>
-
-                        {/* Card */}
-                        <Card
-                            onClick={() => navigate(item.path)}
-                            sx={{
-                                borderRadius: "16px",
-                                overflow: "hidden",
-                                boxShadow: "none",
-                                cursor: "pointer",
-                                transition: "all 0.3s ease",
-                                "&:hover": {
-                                    transform: "translateY(-5px)",
-                                },
-                            }}
-                        >
-                            <CardMedia
-                                component="img"
-                                image={item.image}
-                                alt={item.title}
-                                sx={{
-                                    height: 170,
-                                    objectFit: "cover",
-                                }}
-                            />
-                        </Card>
-
-                        {/* Label */}
-                        <Typography
-                            mt={1.5}
-                            fontWeight={600}
-                            fontSize="16px"
-                        >
-                            {item.title}
-                        </Typography>
-                    </Grid>
-                ))}
-            </Grid>
-        </Box>
-    );
+      <div className="store-grid">
+        {categories.map((item, index) => (
+          <article
+            className="store-card"
+            key={index}
+            onClick={() => navigate(item.path)}
+            role="button"
+            tabIndex={0}
+            onKeyDown={(event) => {
+              if (event.key === "Enter" || event.key === " ") {
+                navigate(item.path);
+              }
+            }}
+          >
+            <div className="store-card__media">
+              <img src={item.image} alt={item.title} />
+            </div>
+            <h3>{item.title}</h3>
+          </article>
+        ))}
+      </div>
+    </section>
+  );
 };
 
 export default ShopStores;

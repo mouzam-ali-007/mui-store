@@ -1,38 +1,23 @@
 import React, { useEffect, useState } from "react";
-import {
-  Drawer,
-  List,
-  ListItemButton,
-  ListItemText,
-  Collapse,
-} from "@mui/material";
-import ExpandLess from "@mui/icons-material/ExpandLess";
-import ExpandMore from "@mui/icons-material/ExpandMore";
 import { getUserSession, signOut } from "../services/data.service";
 import { useNavigate } from "react-router-dom";
+import { ChevronDownIcon, ChevronUpIcon, CloseIcon } from "./Icons";
+
 const SideBar = ({ mobileOpen, setMobileOpen }) => {
   const [openWomen, setOpenWomen] = useState(false);
-  const [user, setUser] = useState(true);
-
+  const [user, setUser] = useState(null);
   const navigate = useNavigate();
 
-  const handleWomenClick = () => {
-    setOpenWomen(!openWomen);
-  };
-
   useEffect(() => {
-
     const getSession = async () => {
-      const res = await getUserSession()
+      const res = await getUserSession();
 
       if (res) {
         setUser(res.session);
       }
-
     };
 
     getSession();
-
   }, []);
 
   const handleLogout = async () => {
@@ -42,104 +27,97 @@ const SideBar = ({ mobileOpen, setMobileOpen }) => {
       setUser(null);
       navigate("/");
     }
-
   };
 
-  const drawerContent = (
-    <List sx={{ padding: "20px" }}>
-      <ListItemButton onClick={() => {
-        navigate("/");
-        setMobileOpen(false);
-      }}>
-        <ListItemText primary="All" />
-      </ListItemButton>
-
-      <ListItemButton onClick={() => {
-        navigate("/comingsoon");
-        setMobileOpen(false);
-      }}>
-        <ListItemText primary="Men" />
-      </ListItemButton>
-
-
-
-      {/* Women dropdown */}
-      <ListItemButton
-        onClick={handleWomenClick}
-        sx={{
-          border: "1px solid",
-          borderRadius: "12px",
-          mb: 1
-        }}
-      >
-        <ListItemText primary="Women" />
-        {openWomen ? <ExpandLess /> : <ExpandMore />}
-      </ListItemButton>
-
-
-
-      <Collapse in={openWomen} timeout="auto" unmountOnExit>
-        <List component="div" disablePadding>
-          <ListItemButton sx={{ pl: 4 }} onClick={() => {
-            navigate("/women");
-            setMobileOpen(false);
-          }}>
-            <ListItemText primary="Pouch Bags" />
-          </ListItemButton>
-
-          <ListItemButton sx={{ pl: 4 }} onClick={() => {
-            navigate("/women");
-            setMobileOpen(false);
-          }}>
-            <ListItemText primary="Clutches" />
-          </ListItemButton>
-
-          <ListItemButton sx={{ pl: 4 }} onClick={() => {
-            navigate("/women");
-            setMobileOpen(false);
-          }}>
-            <ListItemText primary="Mini Bags" />
-          </ListItemButton>
-
-
-        </List>
-      </Collapse>
-
-      <ListItemButton onClick={() => {
-        navigate("/comingsoon");
-        setMobileOpen(false);
-      }}>
-        <ListItemText primary="Kids" />
-      </ListItemButton>
-
-      {user && <ListItemButton
-        onClick={handleLogout}
-        sx={{
-          mt: 3,
-          borderTop: "1px solid #eee",
-          color: "red",
-          borderRadius: "8px"
-        }}
-      >
-        <ListItemText primary="Sign Out" />
-      </ListItemButton>}
-    </List>
-  );
+  const navigateAndClose = (path) => {
+    navigate(path);
+    setMobileOpen(false);
+  };
 
   return (
-    <Drawer
-      variant="temporary"
-      anchor="left"
-      open={mobileOpen}
-      onClose={() => setMobileOpen(false)}
-      sx={{
-        "& .MuiDrawer-paper": {
-          width: 260,
-        }
-      }}
-    >
-      {drawerContent}
-    </Drawer>
+    <>
+      <button
+        type="button"
+        className={`sidebar-backdrop ${mobileOpen ? "sidebar-backdrop--visible" : ""}`}
+        aria-label="Close navigation"
+        onClick={() => setMobileOpen(false)}
+      />
+
+      <aside className={`sidebar ${mobileOpen ? "sidebar--open" : ""}`}>
+        <div className="sidebar__panel">
+          <div className="sidebar__header">
+            <p className="sidebar__eyebrow">Discover</p>
+            <button
+              type="button"
+              className="icon-button sidebar__close"
+              onClick={() => setMobileOpen(false)}
+              aria-label="Close navigation"
+            >
+              <CloseIcon className="icon-button__icon" />
+            </button>
+          </div>
+
+          <div className="sidebar__intro">
+            <h2>Collections</h2>
+            <p>Browse our signature edits with a cleaner and more focused shopping menu.</p>
+          </div>
+
+          <nav className="sidebar__nav">
+            <button type="button" className="sidebar__link" onClick={() => navigateAndClose("/")}>
+              All Products
+            </button>
+
+            <button type="button" className="sidebar__link" onClick={() => navigateAndClose("/comingsoon")}>
+              Men
+            </button>
+
+            <div className="sidebar__group">
+              <button
+                type="button"
+                className="sidebar__link sidebar__link--group"
+                onClick={() => setOpenWomen((current) => !current)}
+              >
+                Women
+                {openWomen ? (
+                  <ChevronUpIcon className="sidebar__chevron" />
+                ) : (
+                  <ChevronDownIcon className="sidebar__chevron" />
+                )}
+              </button>
+
+              {openWomen && (
+                <div className="sidebar__subnav">
+                  {["Pouch Bags", "Clutches", "Mini Bags"].map((label) => (
+                    <button
+                      key={label}
+                      type="button"
+                      className="sidebar__sublink"
+                      onClick={() => navigateAndClose("/women")}
+                    >
+                      {label}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            <button type="button" className="sidebar__link" onClick={() => navigateAndClose("/comingsoon")}>
+              Kids
+            </button>
+          </nav>
+
+          {user && (
+            <button
+              type="button"
+              className="button button--ghost button--full sidebar__logout"
+              onClick={handleLogout}
+            >
+              Sign Out
+            </button>
+          )}
+        </div>
+      </aside>
+    </>
   );
 };
 

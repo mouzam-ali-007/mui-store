@@ -2,53 +2,42 @@
 import React, { useState, useEffect } from "react";
 import { Provider } from 'react-redux';
 import { store } from './store';
+import "./App.css";
 import Navbar from "./components/Navbar";
 import Home from "./pages/Home";
 import ProductDetailsPage from "./components/ProductDetailsPage";
 import Footer from "./components/Footer";
 import SideBar from "./components/SideBar";
-import { Box } from "@mui/material";
 import CarousalComponent from "./components/carousal";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import AuthPage from "./components/AuthPage"; // your login/signup page
-import { supabase } from "./services/data.service"; // your Supabase client
+import AuthPage from "./components/AuthPage";
+import { supabase } from "./services/data.service";
 import ComingSoon from "./components/CommingSoon";
 import ShopStores from "./components/ShopStores";
 import WomenPage from "./components/WomenPage";
 
-// Home page component
 const HomePage = () => (
   <>
     <CarousalComponent />
     <ShopStores />
     <Home />
-
   </>
 );
-
-
 
 function App() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [, setUser] = useState(null);
 
-
-  // Check session on mount
   useEffect(() => {
-    // const session = supabase.auth.session();
-    // if (session?.user) {
-    //   setUser(session.user);
-    //   sessionStorage.setItem("user", JSON.stringify(session.user));
-    // }
+    if (!supabase?.auth) {
+      return undefined;
+    }
 
-    // Listen for auth changes
     const { data: authListener } = supabase.auth.onAuthStateChange((_event, session) => {
       if (session?.user) {
         setUser(session.user);
-        //  sessionStorage.setItem("user", JSON.stringify(session.user));
       } else {
         setUser(null);
-        //  sessionStorage.removeItem("user");
       }
     });
 
@@ -62,40 +51,27 @@ function App() {
       <BrowserRouter>
         <Routes>
 
-          {/* Auth Route (NO layout) */}
           <Route path="/auth" element={<AuthPage />} />
-
-
-          {/* Protected Layout */}
           <Route
             path="/*"
             element={
-              (
-                <>
-                  <Navbar setMobileOpen={setMobileOpen} />
-
-                  <Box sx={{ display: "flex" }}>
-                    <SideBar mobileOpen={mobileOpen} setMobileOpen={setMobileOpen} />
-
-                    <Box sx={{ flexGrow: 1, p: 3, overflow: "hidden" }}>
-                      <Routes>
-                        <Route path="/" element={<HomePage />} />
-
-                        <Route path="/women" element={<WomenPage />} />
-                        <Route path="/product/:id" element={<ProductDetailsPage />} />
-
-
-                        <Route path="/comingsoon" element={<ComingSoon />} />
-                      </Routes>
-                    </Box>
-                  </Box>
-
-                  <Footer />
-                </>
-              )
+              <>
+                <Navbar setMobileOpen={setMobileOpen} />
+                <div className="app-shell">
+                  <SideBar mobileOpen={mobileOpen} setMobileOpen={setMobileOpen} />
+                  <main className="app-shell__content">
+                    <Routes>
+                      <Route path="/" element={<HomePage />} />
+                      <Route path="/women" element={<WomenPage />} />
+                      <Route path="/product/:id" element={<ProductDetailsPage />} />
+                      <Route path="/comingsoon" element={<ComingSoon />} />
+                    </Routes>
+                  </main>
+                </div>
+                <Footer />
+              </>
             }
           />
-
         </Routes>
       </BrowserRouter>
     </Provider>

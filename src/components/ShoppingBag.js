@@ -1,30 +1,13 @@
 import React, { useState } from "react";
-import {
-  Box,
-  Button,
-  Drawer,
-  Typography,
-  IconButton,
-  Divider,
-  List,
-  ListItem,
-  ListItemText,
-  ListItemSecondaryAction,
-} from "@mui/material";
-import RemoveIcon from "@mui/icons-material/Remove";
-import AddIcon from "@mui/icons-material/Add";
-import { useAppSelector, useAppDispatch } from '../store/hooks';
-import { removeItem, updateQuantity } from '../store/cartSlice';
+import { useAppSelector, useAppDispatch } from "../store/hooks";
+import { removeItem, updateQuantity } from "../store/cartSlice";
 import CheckoutModal from "./CheckoutModal";
+import { CloseIcon, MinusIcon, PlusIcon } from "./Icons";
 
-
-const ShoppingBag = ({ bagOpen, setBagOpen, }) => {
-
-
+const ShoppingBag = ({ bagOpen, setBagOpen }) => {
   const dispatch = useAppDispatch();
   const items = useAppSelector((state) => state.cart.items);
   const total = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
-
   const [checkoutOpen, setCheckoutOpen] = useState(false);
 
   const handleCheckout = () => {
@@ -32,99 +15,101 @@ const ShoppingBag = ({ bagOpen, setBagOpen, }) => {
     setCheckoutOpen(true);
   };
 
-
   const handleCheckoutSuccess = () => {
     setCheckoutOpen(false);
     setBagOpen(false);
   };
 
-  console.log("🚀 ~ ShoppingBag ~ checkoutOpen:", checkoutOpen)
-
-
-  if (items.length === 0) {
-    return (
-      <Drawer
-        anchor="right"
-        open={bagOpen}
-        onClose={() => setBagOpen(false)}
-        PaperProps={{ sx: { width: 350, p: 2 } }}
-      >
-        <Typography variant="h6" mb={2}>Your Bag</Typography>
-        <Typography color="text.secondary">Your cart is empty</Typography>
-        <Box sx={{ mt: 4 }}>
-          <Button fullWidth variant="outlined" onClick={() => setBagOpen(false)}>
-            Continue Shopping
-          </Button>
-        </Box>
-      </Drawer>
-    );
-  }
-
   return (
     <>
-      <Drawer
-        anchor="right"
-        open={bagOpen}
-        onClose={() => setBagOpen(false)}
-        PaperProps={{ sx: { width: 350, p: 2 } }}
-      >
-        <Typography variant="h6" mb={2}>Your Bag ({items.length} items)</Typography>
+      {bagOpen && (
+        <div className="overlay overlay--drawer" role="presentation" onClick={() => setBagOpen(false)}>
+          <aside
+            className="drawer drawer--right"
+            role="dialog"
+            aria-modal="true"
+            onClick={(event) => event.stopPropagation()}
+          >
+            <div className="drawer__header">
+              <div>
+                <p className="section-label">Shopping Bag</p>
+                <h2>Your Bag ({items.reduce((sum, item) => sum + item.quantity, 0)} items)</h2>
+              </div>
+              <button type="button" className="icon-button" onClick={() => setBagOpen(false)} aria-label="Close bag">
+                <CloseIcon className="icon-button__icon" />
+              </button>
+            </div>
 
-        <List sx={{ maxHeight: 400, overflow: 'auto' }}>
-          {items.map((item) => (
-            <ListItem key={`${item.id}-${item.size || 'no-size'}`} divider>
-              <Box sx={{ display: 'flex', flexDirection: 'column', flex: 1 }}>
-                <Typography variant="body2" fontWeight="medium">{item.name}</Typography>
-                <Typography variant="body2" color="text.secondary">
-                  PKR{item.price} x {item.quantity}
-                </Typography>
-                {item.size && <Typography variant="caption">Size: {item.size}</Typography>}
-              </Box>
-              <ListItemSecondaryAction>
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                  <IconButton
-                    size="small"
-                    onClick={() => dispatch(updateQuantity({ id: item.id, quantity: item.quantity - 1, size: item.size }))}
-                  >
-                    <RemoveIcon />
-                  </IconButton>
-                  <Typography sx={{ minWidth: 20, textAlign: 'center' }}>{item.quantity}</Typography>
-                  <IconButton
-                    size="small"
-                    onClick={() => dispatch(updateQuantity({ id: item.id, quantity: item.quantity + 1, size: item.size }))}
-                  >
-                    <AddIcon />
-                  </IconButton>
-                  <IconButton
-                    size="small"
-                    edge="end"
-                    onClick={() => dispatch(removeItem(item.id))}
-                  >
-                    ×
-                  </IconButton>
-                </Box>
-              </ListItemSecondaryAction>
-            </ListItem>
-          ))}
-        </List>
+            {items.length === 0 ? (
+              <div className="drawer__empty">
+                <p>Your cart is empty.</p>
+                <button type="button" className="button button--outline button--full" onClick={() => setBagOpen(false)}>
+                  Continue Shopping
+                </button>
+              </div>
+            ) : (
+              <>
+                <div className="bag-list">
+                  {items.map((item) => (
+                    <article className="bag-item" key={`${item.id}-${item.size || "no-size"}`}>
+                      <img className="bag-item__image" src={item.image} alt={item.name} />
+                      <div className="bag-item__content">
+                        <h3>{item.name}</h3>
+                        <p>PKR {Number(item.price).toLocaleString()} x {item.quantity}</p>
+                        {item.size && <span>Size: {item.size}</span>}
+                      </div>
+                      <div className="bag-item__actions">
+                        <div className="qty-stepper">
+                          <button
+                            type="button"
+                            className="icon-button"
+                            onClick={() =>
+                              dispatch(updateQuantity({ id: item.id, quantity: item.quantity - 1, size: item.size }))
+                            }
+                            aria-label="Decrease quantity"
+                          >
+                            <MinusIcon className="icon-button__icon" />
+                          </button>
+                          <strong>{item.quantity}</strong>
+                          <button
+                            type="button"
+                            className="icon-button"
+                            onClick={() =>
+                              dispatch(updateQuantity({ id: item.id, quantity: item.quantity + 1, size: item.size }))
+                            }
+                            aria-label="Increase quantity"
+                          >
+                            <PlusIcon className="icon-button__icon" />
+                          </button>
+                        </div>
 
-        <Divider sx={{ my: 2 }} />
+                        <button
+                          type="button"
+                          className="bag-item__remove"
+                          onClick={() => dispatch(removeItem({ id: item.id, size: item.size }))}
+                        >
+                          Remove
+                        </button>
+                      </div>
+                    </article>
+                  ))}
+                </div>
 
-        <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
-          <Typography>Total:</Typography>
-          <Typography variant="h6" fontWeight="bold">PKR {total.toFixed(2)}</Typography>
-        </Box>
+                <div className="drawer__footer">
+                  <div className="bag-total">
+                    <span>Total</span>
+                    <strong>PKR {total.toFixed(2)}</strong>
+                  </div>
+                  <button type="button" className="button button--primary button--full" onClick={handleCheckout}>
+                    Go to Checkout
+                  </button>
+                </div>
+              </>
+            )}
+          </aside>
+        </div>
+      )}
 
-        <Button
-          variant="contained"
-          fullWidth
-          onClick={handleCheckout}
-          sx={{ mb: 2 }}
-        >
-          Go to Checkout
-        </Button>
-      </Drawer>
-      {/* ✅ Checkout Modal */}
       <CheckoutModal
         open={checkoutOpen}
         onClose={() => setCheckoutOpen(false)}

@@ -1,158 +1,84 @@
 import React from "react";
-import {
-    Box,
-    Button,
-    FormControlLabel,
-    Menu,
-    MenuItem,
-    Stack,
-    Switch,
-    Typography
-} from "@mui/material";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import TuneIcon from "@mui/icons-material/Tune";
+import { FilterIcon } from "./Icons";
 
 const FilterProduct = ({
-    category = "",
-    categories = [],
-    inStock = false,
-    sortBy = "",
-    onCategoryChange = () => { },
-    onInStockChange = () => { },
-    onSortChange = () => { },
-    onClearFilters = () => { }
+  category = "",
+  categories = [],
+  inStock = false,
+  sortBy = "",
+  showCategory = true,
+  onCategoryChange = () => {},
+  onInStockChange = () => {},
+  onSortChange = () => {},
+  onClearFilters = () => {},
 }) => {
-    const [categoryAnchorEl, setCategoryAnchorEl] = React.useState(null);
-    const [sortAnchorEl, setSortAnchorEl] = React.useState(null);
+  const hasActiveFilters = Boolean(category || inStock || sortBy);
 
-    const hasActiveFilters = Boolean(category || inStock || sortBy);
-    let filterCategories = ['women']
-    return (
-        <Box sx={{ mb: 3 }}>
-            <Stack
-                direction="row"
-                spacing={1.5}
-                alignItems="center"
-                sx={{
-                    overflowX: "auto",
-                    whiteSpace: "nowrap",
-                    pb: 1,
-                    "&::-webkit-scrollbar": {
-                        display: "none"
-                    },
-                    msOverflowStyle: "none",
-                    scrollbarWidth: "none"
-                }}
+  return (
+    <section className="filter-bar">
+      <div className="filter-bar__title">
+        <FilterIcon className="filter-bar__icon" />
+        <div>
+          <p>Refine the collection</p>
+          <span>Sort, filter, and focus on what fits your style.</span>
+        </div>
+      </div>
+
+      <div className="filter-bar__controls">
+        {showCategory && (
+          <label className="field field--compact">
+            <span>Category</span>
+            <select
+              className="field-control"
+              value={category}
+              onChange={(event) => onCategoryChange(event.target.value)}
             >
-                <Button
-                    variant="outlined"
-                    endIcon={<ExpandMoreIcon />}
-                    onClick={(event) => setCategoryAnchorEl(event.currentTarget)}
-                    sx={{ flex: "0 0 auto" }}
-                >
-                    {category || "Category"}
-                </Button>
+              <option value="">All Categories</option>
+              {categories.map((item) => (
+                <option key={item} value={item}>
+                  {item.charAt(0).toUpperCase() + item.slice(1)}
+                </option>
+              ))}
+            </select>
+          </label>
+        )}
 
-                <Menu
-                    anchorEl={categoryAnchorEl}
-                    open={Boolean(categoryAnchorEl)}
-                    onClose={() => setCategoryAnchorEl(null)}
-                >
-                    <MenuItem
-                        onClick={() => {
-                            onCategoryChange("");
-                            setCategoryAnchorEl(null);
-                        }}
-                    >
-                        All Categories
-                    </MenuItem>
-                    {filterCategories.map((item) => (
-                        <MenuItem
-                            key={item}
-                            onClick={() => {
-                                onCategoryChange(item);
-                                setCategoryAnchorEl(null);
-                            }}
-                        >
-                            {item}
-                        </MenuItem>
-                    ))}
-                </Menu>
+        <label className="field field--compact">
+          <span>Sort</span>
+          <select
+            className="field-control"
+            value={sortBy}
+            onChange={(event) => onSortChange(event.target.value)}
+          >
+            <option value="">Default</option>
+            <option value="price-asc">Price: Low to High</option>
+            <option value="price-desc">Price: High to Low</option>
+          </select>
+        </label>
 
-                <Button
-                    variant="outlined"
-                    startIcon={<TuneIcon />}
-                    endIcon={<ExpandMoreIcon />}
-                    onClick={(event) => setSortAnchorEl(event.currentTarget)}
-                    sx={{ flex: "0 0 auto" }}
-                >
-                    {sortBy === "price-asc"
-                        ? "Price: Low to High"
-                        : sortBy === "price-desc"
-                            ? "Price: High to Low"
-                            : "Sort"}
-                </Button>
+        <label className="toggle">
+          <input
+            type="checkbox"
+            checked={inStock}
+            onChange={(event) => onInStockChange(event.target.checked)}
+          />
+          <span>In stock only</span>
+        </label>
 
-                <Menu
-                    anchorEl={sortAnchorEl}
-                    open={Boolean(sortAnchorEl)}
-                    onClose={() => setSortAnchorEl(null)}
-                >
-                    <MenuItem
-                        onClick={() => {
-                            onSortChange("");
-                            setSortAnchorEl(null);
-                        }}
-                    >
-                        Default
-                    </MenuItem>
-                    <MenuItem
-                        onClick={() => {
-                            onSortChange("price-asc");
-                            setSortAnchorEl(null);
-                        }}
-                    >
-                        Price: Low to High
-                    </MenuItem>
-                    <MenuItem
-                        onClick={() => {
-                            onSortChange("price-desc");
-                            setSortAnchorEl(null);
-                        }}
-                    >
-                        Price: High to Low
-                    </MenuItem>
-                </Menu>
+        {hasActiveFilters && (
+          <button type="button" className="button button--ghost" onClick={onClearFilters}>
+            Clear filters
+          </button>
+        )}
+      </div>
 
-                <FormControlLabel
-                    sx={{ ml: 0.5, flex: "0 0 auto" }}
-                    control={
-                        <Switch
-                            checked={inStock}
-                            onChange={(event) => onInStockChange(event.target.checked)}
-                        />
-                    }
-                    label="In Stock"
-                />
-
-                {hasActiveFilters && (
-                    <Button
-                        color="inherit"
-                        onClick={onClearFilters}
-                        sx={{ flex: "0 0 auto" }}
-                    >
-                        Clear
-                    </Button>
-                )}
-            </Stack>
-
-            {hasActiveFilters && (
-                <Typography sx={{ mt: 1, color: "text.secondary", fontSize: 14 }}>
-                    Showing products matching your current filters.
-                </Typography>
-            )}
-        </Box>
-    );
+      {hasActiveFilters && (
+        <p className="filter-bar__summary">
+          Showing products matching your current filters.
+        </p>
+      )}
+    </section>
+  );
 };
 
 export default FilterProduct;

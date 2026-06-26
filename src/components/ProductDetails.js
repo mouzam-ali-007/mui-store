@@ -1,287 +1,183 @@
 import React, { useEffect, useState } from "react";
-import {
-  Box,
-  Grid,
-  Typography,
-  Button,
-  Paper,
-  IconButton,
-  Divider,
-  LinearProgress
-} from "@mui/material";
-import AddIcon from "@mui/icons-material/Add";
-import RemoveIcon from "@mui/icons-material/Remove";
-import { useNavigate } from "react-router-dom";
 import { useAppDispatch } from "../store/hooks";
 import { addItem } from "../store/cartSlice";
-import ArrowBackIcon from "@mui/icons-material/ArrowBack";
-
-import { useParams, Link } from "react-router-dom";
+import { Link } from "react-router-dom";
 import CheckoutModal from "./CheckoutModal";
+import { ArrowLeftIcon, MinusIcon, PlusIcon } from "./Icons";
 
-const ProductDetails = ({ product }) => {
+const ProductDetails = ({ product, loading = false }) => {
   const [checkoutOpen, setCheckoutOpen] = useState(false);
-
-  const [selectedImage, setSelectedImage] = useState(
-    product?.images?.[0] || product?.image
-  );
-  const [selectedSize, setSelectedSize] = useState(null);
+  const [selectedImage, setSelectedImage] = useState(product?.images?.[0] || product?.image);
+  const [selectedSize, setSelectedSize] = useState(product?.sizes?.[0] || null);
   const [qty, setQty] = useState(1);
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    // simulate API call (replace with your real fetch)
-    setTimeout(() => {
-      setLoading(false);
-    }, 1500);
-  }, []);
-
   const dispatch = useAppDispatch();
-
-  const [loading, setLoading] = useState(true);
-
   const user = JSON.parse(sessionStorage.getItem("user") || "null");
 
-  if (loading) {
-    return (
-      <>
-        <LinearProgress
-          sx={{
-            position: "fixed",
-            top: 0,
-            left: 0,
-            width: "100%",
-            zIndex: 2000,
-          }}
-        />
-      </>
-    );
-  }
-
-  if (!product) return <Typography>Product not found.</Typography>;
-
-
-  const goToCheckout = () => {
-    setCheckoutOpen(true);
-  }
-
-  const handleCheckoutSuccess = () => {
-    setCheckoutOpen(false);
-  };
-
+  useEffect(() => {
+    setSelectedImage(product?.images?.[0] || product?.image);
+    setSelectedSize(product?.sizes?.[0] || null);
+  }, [product]);
 
   const handleAddToCart = () => {
     if (!user) {
-      // navigate("/auth");
-      // return;
+      // Local mode still allows adding to cart.
     }
-    dispatch(addItem({
-      id: product.id,
-      name: `${product.brand || ""} ${product.name}`,
-      price: product.price,
-      image: product.image,
-      quantity: qty,
-      size: selectedSize || undefined,
-    }));
+
+    dispatch(
+      addItem({
+        id: product.id,
+        name: `${product.brand || ""} ${product.name}`,
+        price: product.price,
+        image: product.image,
+        quantity: qty,
+        size: selectedSize || undefined,
+      })
+    );
   };
 
+  if (loading) {
+    return <div className="loading-bar" aria-hidden="true" />;
+  }
+
+  if (!product) {
+    return (
+      <section className="state-card">
+        <h2>Product not found.</h2>
+        <p>We couldn’t find that item right now. Try heading back to the collection.</p>
+        <Link className="button button--primary" to="/">
+          Back to Home
+        </Link>
+      </section>
+    );
+  }
+
   return (
-
     <>
-
-      {loading && (
-        <LinearProgress
-          sx={{
-            position: "fixed",
-            top: 0,
-            left: 0,
-            width: "100%",
-            zIndex: 2000,
-          }}
-        />
-      )}
-
-      <Box sx={{ p: { xs: 2, md: 4 } }}>
-
-        <Box sx={{ mb: 3 }}>
-          <Button
-            component={Link}
-            to="/"
-            startIcon={<ArrowBackIcon />}
-            color="inherit"
-          >
+      <section className="product-page">
+        <div className="product-page__back">
+          <Link className="button button--ghost" to="/">
+            <ArrowLeftIcon className="button__icon" />
             Back to Home
-          </Button>
-        </Box>
-        <Grid container spacing={4}>
+          </Link>
+        </div>
 
-          {/* LEFT IMAGE SECTION */}
-          <Grid item xs={12} md={6}>
-            <Box sx={{ display: "flex", gap: 2 }}>
-
-              {/* Thumbnails */}
-              <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
-                {(product.images || [product.image]).map((img, i) => (
-                  <img
-                    key={i}
-                    src={img}
-                    alt=""
-                    onClick={() => setSelectedImage(img)}
-                    style={{
-                      width: 60,
-                      height: 80,
-                      objectFit: "cover",
-                      cursor: "pointer",
-                      border:
-                        selectedImage === img
-                          ? "2px solid black"
-                          : "1px solid #ddd",
-                      borderRadius: 6,
-                    }}
-                  />
-                ))}
-              </Box>
-
-              {/* Main Image */}
-              <Box sx={{ flex: 1 }}>
-                <img
-                  src={product.image}
-                  alt={product.name}
-                  style={{
-                    width: "100%",
-                    height: "500px",
-                    objectFit: "cover",
-                    borderRadius: "10px",
-                  }}
-                />
-              </Box>
-            </Box>
-          </Grid>
-
-          {/* RIGHT CONTENT */}
-          <Grid item xs={12} md={6}>
-
-            {/* Brand + Name */}
-            <Typography variant="h6" fontWeight={600}>
-              {product.brand || "Brand"}
-            </Typography>
-
-            <Typography variant="body1" color="text.secondary">
-              {product.name}
-            </Typography>
-
-            {/* Price */}
-            <Box sx={{ mt: 2 }}>
-              <Typography variant="h5" fontWeight={700}>
-                PKR {product.price}
-              </Typography>
-
-              <Box sx={{ display: "flex", gap: 1 }}>
-                {product.oldPrice && (
-                  <Typography sx={{ textDecoration: "line-through", color: "gray" }}>
-                    ${product.oldPrice}
-                  </Typography>
-                )}
-                {product.discount && (
-                  <Typography color="error">-{product.discount}%</Typography>
-                )}
-              </Box>
-            </Box>
-
-            {/* Rating */}
-            <Typography sx={{ mt: 1 }}>
-              ⭐ {product.rating || 4.0} ({product.reviews || 50} reviews)
-            </Typography>
-
-            {/* Express Box */}
-            <Paper sx={{ p: 2, mt: 2 }}>
-              <Typography sx={{ color: "#1976d2", fontWeight: 600 }}>
-                ⚡ Express — Instant dispatch
-              </Typography>
-              <Typography variant="body2" color="text.secondary">
-                Est. delivery in 3-5 days
-              </Typography>
-            </Paper>
-
-            <Divider sx={{ my: 3 }} />
-
-            {/* SIZE */}
-            <Typography fontWeight={600}>Size</Typography>
-            <Box sx={{ display: "flex", gap: 1, mt: 1 }}>
-              {(product.sizes || ["S", "M", "L", "XL"]).map((size) => (
-                <Box
-                  key={size}
-                  onClick={() => setSelectedSize(size)}
-                  sx={{
-                    px: 2,
-                    py: 1,
-                    border: "1px solid #ccc",
-                    borderRadius: 1,
-                    cursor: "pointer",
-                    bgcolor: selectedSize === size ? "black" : "#fff",
-                    color: selectedSize === size ? "#fff" : "#000",
-                  }}
+        <div className="product-page__layout">
+          <div className="product-page__gallery">
+            <div className="product-page__thumbs">
+              {(product.images || [product.image]).map((img, index) => (
+                <button
+                  type="button"
+                  className={`product-page__thumb ${selectedImage === img ? "product-page__thumb--active" : ""}`}
+                  key={index}
+                  onClick={() => setSelectedImage(img)}
                 >
-                  {size}
-                </Box>
+                  <img src={img} alt={`${product.name} view ${index + 1}`} />
+                </button>
               ))}
-            </Box>
+            </div>
 
-            {/* Quantity */}
-            <Box sx={{ mt: 3 }}>
-              <Typography fontWeight={600}>Quantity</Typography>
+            <div className="product-page__main-image">
+              <img src={selectedImage} alt={product.name} />
+            </div>
+          </div>
 
-              <Box sx={{ display: "flex", alignItems: "center", gap: 2, mt: 1 }}>
-                <IconButton onClick={() => setQty(Math.max(1, qty - 1))}>
-                  <RemoveIcon />
-                </IconButton>
+          <div className="product-page__content">
+            <p className="section-label">{product.brand || "Brand"}</p>
+            <h1>{product.name}</h1>
+            <p className="product-page__description">{product.description}</p>
 
-                <Typography>{qty}</Typography>
+            <div className="product-page__price">
+              <strong>PKR {Number(product.price).toLocaleString()}</strong>
+              <div>
+                {product.oldPrice && <span>PKR {Number(product.oldPrice).toLocaleString()}</span>}
+                {product.discount && <em>-{product.discount}%</em>}
+              </div>
+            </div>
 
-                <IconButton onClick={() => setQty(qty + 1)}>
-                  <AddIcon />
-                </IconButton>
-              </Box>
-            </Box>
+            <p className="product-page__rating">
+              ★ {product.rating || 4.0} ({product.reviews || 50} reviews)
+            </p>
 
-            {/* Buttons */}
-            <Box sx={{ mt: 4, display: "flex", flexDirection: "column", gap: 2 }}>
-              <Button
-                onClick={handleAddToCart}
-                variant="contained"
-                sx={{
-                  bgcolor: "black",
-                  "&:hover": { bgcolor: "#333" },
-                  py: 1.5,
-                }}
-              >
+            <div className="product-page__express">
+              <strong>Express</strong>
+              <p>Instant dispatch with estimated delivery in 3-5 days.</p>
+            </div>
+
+            <div className="product-page__block">
+              <h2>Size</h2>
+              <div className="size-list">
+                {(product.sizes || ["S", "M", "L", "XL"]).map((size) => (
+                  <button
+                    key={size}
+                    type="button"
+                    className={`size-chip ${selectedSize === size ? "size-chip--active" : ""}`}
+                    onClick={() => setSelectedSize(size)}
+                  >
+                    {size}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <div className="product-page__block">
+              <h2>Quantity</h2>
+              <div className="qty-stepper qty-stepper--wide">
+                <button
+                  type="button"
+                  className="icon-button"
+                  onClick={() => setQty(Math.max(1, qty - 1))}
+                  aria-label="Decrease quantity"
+                >
+                  <MinusIcon className="icon-button__icon" />
+                </button>
+                <strong>{qty}</strong>
+                <button
+                  type="button"
+                  className="icon-button"
+                  onClick={() => setQty(qty + 1)}
+                  aria-label="Increase quantity"
+                >
+                  <PlusIcon className="icon-button__icon" />
+                </button>
+              </div>
+            </div>
+
+            <div className="product-page__actions">
+              <button type="button" className="button button--primary button--full" onClick={handleAddToCart}>
                 Add To Bag
-              </Button>
-
-              <Button variant="outlined" sx={{ py: 1.5 }}
-                onClick={goToCheckout}
-              >
+              </button>
+              <button type="button" className="button button--outline button--full" onClick={() => setCheckoutOpen(true)}>
                 Buy Now
-              </Button>
-            </Box>
-          </Grid>
-        </Grid>
-      </Box>
+              </button>
+            </div>
+
+            <div className="product-page__details">
+              {product.details?.map((item, index) => (
+                <div className="product-page__detail-row" key={index}>
+                  <span>{item.label}</span>
+                  <p>{item.value}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
       <CheckoutModal
         open={checkoutOpen}
         onClose={() => setCheckoutOpen(false)}
-        onSuccess={handleCheckoutSuccess}
-        product={[{
-          id: product.id,
-          name: `${product.brand || ""} ${product.name}`,
-          price: product.price,
-          image: product.image,
-          quantity: qty,
-          size: selectedSize || undefined,
-        }]}
+        product={[
+          {
+            id: product.id,
+            name: `${product.brand || ""} ${product.name}`,
+            price: product.price,
+            image: product.image,
+            quantity: qty,
+            size: selectedSize || undefined,
+          },
+        ]}
       />
     </>
-
   );
 };
 

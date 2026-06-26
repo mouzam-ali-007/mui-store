@@ -1,197 +1,146 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { Box, Grid, Container, Typography } from "@mui/material";
 import ProductCard from "../components/ProductCard";
 import { getProducts } from "../services/data.service";
-import { LinearProgress } from "@mui/material";
 import FilterProduct from "../components/FilterProduct";
 import { useSearchParams } from "react-router-dom";
+import { formatProduct } from "../utils/product";
 
-const Home = () => {
-    const [savedProducts, setStoredProducts] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [searchParams, setSearchParams] = useSearchParams();
+const Home = ({
+  forcedCategory = "",
+  pageTitle = "All Products",
+  pageDescription = "Discover polished silhouettes and elevated everyday essentials from our latest edit.",
+  showBestCollection = true,
+}) => {
+  const [savedProducts, setStoredProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [searchParams, setSearchParams] = useSearchParams();
 
-    const searchTerm = searchParams.get("q")?.trim().toLowerCase() || "";
-    const selectedCategory = searchParams.get("category") || "";
-    const inStockOnly = searchParams.get("inStock") === "true";
-    const sortBy = searchParams.get("sort") || "";
-    const hasActiveFilters = Boolean(searchTerm || selectedCategory || inStockOnly || sortBy);
+  const searchTerm = searchParams.get("q")?.trim().toLowerCase() || "";
+  const selectedCategory = forcedCategory || searchParams.get("category") || "";
+  const inStockOnly = searchParams.get("inStock") === "true";
+  const sortBy = searchParams.get("sort") || "";
+  const hasActiveFilters = Boolean(searchTerm || selectedCategory || inStockOnly || sortBy);
 
-    const updateFilterParam = (key, value) => {
-        const nextParams = new URLSearchParams(searchParams);
+  const updateFilterParam = (key, value) => {
+    const nextParams = new URLSearchParams(searchParams);
 
-        if (!value) {
-            nextParams.delete(key);
-        } else {
-            nextParams.set(key, value);
-        }
+    if (!value) {
+      nextParams.delete(key);
+    } else {
+      nextParams.set(key, value);
+    }
 
-        setSearchParams(nextParams);
+    setSearchParams(nextParams);
+  };
+
+  useEffect(() => {
+    let isMounted = true;
+
+    getProducts().then((data) => {
+      if (!isMounted) {
+        return;
+      }
+
+      const normalizedProducts = data?.length ? data.map((item) => formatProduct(item)) : [];
+      setStoredProducts(normalizedProducts);
+      setLoading(false);
+    });
+
+    return () => {
+      isMounted = false;
     };
+  }, []);
 
-    useEffect(() => {
-        setTimeout(() => {
-            setLoading(false);
-        }, 1500);
-    }, []);
+  const categories = useMemo(
+    () => [...new Set(savedProducts.map((product) => product.category).filter(Boolean))],
+    [savedProducts]
+  );
 
-    useEffect(() => {
-        getProducts().then((data) => {
-            if (!data) {
-                setStoredProducts([]);
-                return;
-            }
+  const filteredProducts = useMemo(() => {
+    const filtered = savedProducts.filter((product) => {
+      const matchesSearch =
+        !searchTerm ||
+        product.name?.toLowerCase().includes(searchTerm) ||
+        product.brand?.toLowerCase().includes(searchTerm) ||
+        product.description?.toLowerCase().includes(searchTerm) ||
+        product.category?.toLowerCase().includes(searchTerm);
 
-            const updatedProducts = data.map((item) => {
-                const discount = 20; // static for now OR calculate later
-                const category = item.category || item.name || "General";
+      const matchesCategory = !selectedCategory || product.category === selectedCategory;
+      const matchesStock = !inStockOnly || product.inStock;
 
-                return {
-                    id: item.id,
-                    name: item.name,
-                    description: item.description,
-                    image: item.image,
+      return matchesSearch && matchesCategory && matchesStock;
+    });
 
-                    // required UI fields
-                    brand: "De Mellier", // static or from API later
-                    price: item.price,
-                    oldPrice: (item.price * 1.2).toFixed(2), // fake old price
-                    discount: discount,
-                    rating: 5.0, // static for now
-                    express: true,
-                    inStock: item.in_stock ?? true,
-                    category,
-                    details: [
-                        { label: "Bag Style", value: "This exquisite Festive/Party Wear Bag set boasts a bright lavender color scheme, perfect for summer wear. The cotton shirt features intricate embroidery, while the farshi shalwar bottoms and Bemberg crinkle chiffon dupatta add a touch of elegance. Ideal for special occasions, this 3-piece set from Haraj Collections exudes charm and sophistication." },
-                    ],
-                    images: [item.image, item.image, item.image],
-                    sizes: ["S", "M", "L", "XL"]
-                };
-            });
+    if (sortBy === "price-asc") {
+      return [...filtered].sort((first, second) => Number(first.price) - Number(second.price));
+    }
 
-            setStoredProducts(updatedProducts);
-        });
-    }, []);
+    if (sortBy === "price-desc") {
+      return [...filtered].sort((first, second) => Number(second.price) - Number(first.price));
+    }
 
-    const categories = useMemo(
-        () => [...new Set(savedProducts.map((product) => product.category).filter(Boolean))],
-        [savedProducts]
-    );
+    return filtered;
+  }, [inStockOnly, savedProducts, searchTerm, selectedCategory, sortBy]);
 
-    const filteredProducts = useMemo(() => {
-        const filtered = savedProducts.filter((product) => {
-            const matchesSearch =
-                !searchTerm ||
-                product.name?.toLowerCase().includes(searchTerm) ||
-                product.brand?.toLowerCase().includes(searchTerm) ||
-                product.description?.toLowerCase().includes(searchTerm) ||
-                product.category?.toLowerCase().includes(searchTerm);
+  const bestCollectionProducts = useMemo(() => savedProducts.slice(0, 4), [savedProducts]);
 
-            const matchesCategory = !selectedCategory || product.category === selectedCategory;
-            const matchesStock = !inStockOnly || product.inStock;
+  return (
+    <section className="catalog">
+      {loading && <div className="loading-bar" aria-hidden="true" />}
 
-            return matchesSearch && matchesCategory && matchesStock;
-        });
+      <div className="catalog__header">
+        <p className="section-label">Curated Edit</p>
+        <h2>{pageTitle}</h2>
+        <p>{pageDescription}</p>
+      </div>
 
-        if (sortBy === "price-asc") {
-            return [...filtered].sort((first, second) => Number(first.price) - Number(second.price));
-        }
+      <FilterProduct
+        category={selectedCategory}
+        categories={categories}
+        inStock={inStockOnly}
+        sortBy={sortBy}
+        showCategory={!forcedCategory}
+        onCategoryChange={(value) => updateFilterParam("category", value)}
+        onInStockChange={(checked) => updateFilterParam("inStock", checked ? "true" : "")}
+        onSortChange={(value) => updateFilterParam("sort", value)}
+        onClearFilters={() => {
+          const nextParams = new URLSearchParams(searchParams);
+          nextParams.delete("category");
+          nextParams.delete("inStock");
+          nextParams.delete("sort");
+          setSearchParams(nextParams);
+        }}
+      />
 
-        if (sortBy === "price-desc") {
-            return [...filtered].sort((first, second) => Number(second.price) - Number(first.price));
-        }
+      <div className="catalog__grid">
+        {filteredProducts.map((product) => (
+          <ProductCard key={product.id} product={product} />
+        ))}
+      </div>
 
-        return filtered;
-    }, [inStockOnly, savedProducts, searchTerm, selectedCategory, sortBy]);
+      {!loading && filteredProducts.length === 0 && (
+        <div className="catalog__empty">
+          <h3>No products matched your search.</h3>
+          <p>Try a broader search, clear filters, or explore the full collection.</p>
+        </div>
+      )}
 
-    const bestCollectionProducts = useMemo(
-        () => savedProducts.slice(0, 4),
-        [savedProducts]
-    );
-
-
-
-    return (
-        <>
-
-            {loading && (
-                <LinearProgress
-                    sx={{
-                        position: "fixed",
-                        top: 0,
-                        left: 0,
-                        width: "100%",
-                        zIndex: 2000,
-                    }}
-                />
-            )}
-            <Container sx={{ mt: 15 }}>
-
-
-                <FilterProduct
-                    category={selectedCategory}
-                    categories={categories}
-                    inStock={inStockOnly}
-                    sortBy={sortBy}
-                    onCategoryChange={(value) => updateFilterParam("category", value)}
-                    onInStockChange={(checked) => updateFilterParam("inStock", checked ? "true" : "")}
-                    onSortChange={(value) => updateFilterParam("sort", value)}
-                    onClearFilters={() => {
-                        const nextParams = new URLSearchParams(searchParams);
-                        nextParams.delete("category");
-                        nextParams.delete("inStock");
-                        nextParams.delete("sort");
-                        setSearchParams(nextParams);
-                    }}
-                />
-
-                <Typography variant="h5" sx={{ fontWeight: 700, mb: 3 }}>
-                    All Products
-                </Typography>
-
-                <Grid container spacing={{ xs: 2, sm: 3 }}>
-                    {filteredProducts.map((product) => (
-                        <Grid item key={product.id} xs={6} sm={6} md={3} lg={2} sx={{ display: "flex" }}>
-                            <ProductCard product={product} />
-                        </Grid>
-                    ))}
-                </Grid>
-
-                {!loading && filteredProducts.length === 0 && (
-                    <Typography sx={{ mt: 4, textAlign: "center", color: "text.secondary" }}>
-                        No products matched your search or filters.
-                    </Typography>
-                )}
-
-                {!hasActiveFilters && bestCollectionProducts.length > 0 && (
-                    <Box sx={{ mb: 60, mt: 6 }}>
-                        <Typography
-                            variant="h4"
-                            sx={{ fontWeight: 700, textAlign: "center", mb: 1 }}
-                        >
-                            Our Best Collection
-                        </Typography>
-                        <Typography
-                            sx={{ textAlign: "center", color: "text.secondary", mb: 4 }}
-                        >
-                            A curated selection of four standout pieces from our latest range.
-                        </Typography>
-
-                        <Grid container spacing={{ xs: 2, sm: 3 }}>
-                            {bestCollectionProducts.map((product) => (
-                                <Grid item key={`best-${product.id}`} xs={6} sm={6} md={3} sx={{ display: "flex" }}>
-                                    <ProductCard product={product} />
-                                </Grid>
-                            ))}
-                        </Grid>
-                    </Box>
-                )}
-
-
-            </Container>
-        </>
-
-    );
+      {!hasActiveFilters && showBestCollection && bestCollectionProducts.length > 0 && (
+        <section className="collection-panel">
+          <div className="collection-panel__header">
+            <p className="section-label">Best Collection</p>
+            <h3>Four standout picks from the latest drop.</h3>
+            <p>A small edit of polished favorites chosen for their shape, texture, and versatility.</p>
+          </div>
+          <div className="catalog__grid catalog__grid--featured">
+            {bestCollectionProducts.map((product) => (
+              <ProductCard key={`best-${product.id}`} product={product} />
+            ))}
+          </div>
+        </section>
+      )}
+    </section>
+  );
 };
 
 export default Home;

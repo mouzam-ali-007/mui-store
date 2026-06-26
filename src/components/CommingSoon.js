@@ -1,41 +1,21 @@
 import React from "react";
-import { Box, Typography, Button } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 
 const ComingSoon = () => {
-    const navigate = useNavigate();
+  const navigate = useNavigate();
 
-    return (
-        <Box
-            sx={{
-                height: "100vh",
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-                justifyContent: "center",
-                background: "linear-gradient(135deg, #f5f7fa, #c3cfe2)"
-            }}
-        >
-            <Typography variant="h2" fontWeight="bold" gutterBottom>
-                Coming Soon
-            </Typography>
-
-            <Typography variant="h6" color="text.secondary" mb={3}>
-                We’re working  to bring this section to life.
-            </Typography>
-
-            <Button
-                variant="contained"
-                onClick={() => navigate("/")}
-                sx={{
-                    borderRadius: "20px",
-                    padding: "10px 25px"
-                }}
-            >
-                Go Back Home
-            </Button>
-        </Box>
-    );
+  return (
+    <section className="coming-soon">
+      <div className="coming-soon__card">
+        <p className="section-label">In Progress</p>
+        <h1>Coming Soon</h1>
+        <p>We’re working to bring this section to life.</p>
+        <button type="button" className="button button--primary" onClick={() => navigate("/")}>
+          Go Back Home
+        </button>
+      </div>
+    </section>
+  );
 };
 
 export default ComingSoon;

@@ -1,148 +1,90 @@
 import React, { useState } from "react";
-import { signUpWithEmail, loginWithEmail, loginWithPhone } from "./../services/data.service";
-import { Box, TextField, Button, Typography, ToggleButton, ToggleButtonGroup, Paper } from "@mui/material";
+import { signUpWithEmail, loginWithEmail } from "./../services/data.service";
 import { useNavigate } from "react-router-dom";
 
 const AuthPage = () => {
-    const [isLogin, setIsLogin] = useState(true);
-    const [authType, setAuthType] = useState("email");
-    const [email, setEmail] = useState("");
-    const [phone, setPhone] = useState("");
-    const [password, setPassword] = useState("");
-    const [message, setMessage] = useState("");
-    const navigate = useNavigate();
+  const [isLogin, setIsLogin] = useState(true);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [message, setMessage] = useState("");
+  const navigate = useNavigate();
 
-    const handleAuth = async () => {
-        let data;
-        try {
-            if (isLogin) {
-                if (authType === "email") {
-                    data = await loginWithEmail(email, password);
+  const handleAuth = async (event) => {
+    event.preventDefault();
+    let data;
 
-                    if (data.user) {
-                        setMessage("Logged in successfully!");
-                        sessionStorage.setItem("user", JSON.stringify(data.user));
-                        navigate("/");
-                    } else {
-                        setMessage("Some thing went wrong!");
-                    }
+    try {
+      if (isLogin) {
+        data = await loginWithEmail(email, password);
 
-                } else {
-                    await loginWithPhone(phone);
-                    setMessage("OTP sent to your phone!");
-                }
-            } else {
-                if (authType === "email") {
-                    data = await signUpWithEmail(email, password);
-                    if (data.user) {
-                        setMessage("Sign up successful! Check your email to confirm.");
-                        navigate("/");
-                        sessionStorage.setItem("user", JSON.stringify(data.user));
-                    } else {
-                        setMessage("Some thing went wrong!");
-                    }
-
-                } else {
-                    await loginWithPhone(phone);
-                    setMessage("OTP sent for sign up!");
-                }
-            }
-        } catch (error) {
-            setMessage(error.message);
+        if (data.user) {
+          setMessage("Logged in successfully!");
+          sessionStorage.setItem("user", JSON.stringify(data.user));
+          navigate("/");
+        } else {
+          setMessage("Something went wrong.");
         }
-    };
+      } else {
+        data = await signUpWithEmail(email, password);
 
-    return (
+        if (data.user) {
+          setMessage("Sign up successful! Check your email to confirm.");
+          navigate("/");
+          sessionStorage.setItem("user", JSON.stringify(data.user));
+        } else {
+          setMessage("Something went wrong.");
+        }
+      }
+    } catch (error) {
+      setMessage(error.message);
+    }
+  };
 
+  return (
+    <section className="auth-screen">
+      <div className="auth-card">
+        <p className="section-label">Member Access</p>
+        <h1>{isLogin ? "Welcome Back" : "Create Account"}</h1>
+        <p className="auth-card__copy">
+          {isLogin ? "Login to continue your shopping journey." : "Sign up to save your favorites and orders."}
+        </p>
 
-        <Box
-            sx={{
-                minHeight: "100vh",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                background: "linear-gradient(135deg,rgb(164, 189, 240),rgb(220, 198, 242))",
-                px: 2,
-            }}
-        >
-            <Paper
-                elevation={6}
-                sx={{
-                    width: "100%",
-                    maxWidth: 400,
-                    p: { xs: 3, sm: 4 },
-                    borderRadius: 3,
-                    textAlign: "center",
-                }}
-            >
-                {/* Title */}
-                <Typography variant="h4" fontWeight="bold" mb={1}>
-                    {isLogin ? "Welcome Back" : "Create Account"}
-                </Typography>
+        <form className="form-grid" onSubmit={handleAuth}>
+          <label className="field">
+            <span>Email</span>
+            <input
+              className="field-control"
+              type="email"
+              value={email}
+              onChange={(event) => setEmail(event.target.value)}
+              required
+            />
+          </label>
 
-                <Typography variant="body2" color="text.secondary" mb={3}>
-                    {isLogin
-                        ? "Login to continue"
-                        : "Sign up to get started"}
-                </Typography>
+          <label className="field">
+            <span>Password</span>
+            <input
+              className="field-control"
+              type="password"
+              value={password}
+              onChange={(event) => setPassword(event.target.value)}
+              required
+            />
+          </label>
 
-                {/* Email Inputs */}
-                <TextField
-                    label="Email"
-                    fullWidth
-                    size="medium"
-                    sx={{ mb: 2 }}
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                />
+          <button type="submit" className="button button--primary button--full">
+            {isLogin ? "Login" : "Sign Up"}
+          </button>
+        </form>
 
-                <TextField
-                    label="Password"
-                    type="password"
-                    fullWidth
-                    sx={{ mb: 3 }}
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                />
+        <button type="button" className="auth-card__switch" onClick={() => setIsLogin(!isLogin)}>
+          {isLogin ? "Don't have an account? Sign Up" : "Already have an account? Login"}
+        </button>
 
-                {/* Button */}
-                <Button
-                    variant="contained"
-                    fullWidth
-                    size="large"
-                    onClick={handleAuth}
-                    sx={{
-                        py: 1.3,
-                        borderRadius: 2,
-                        textTransform: "none",
-                        fontWeight: "bold",
-                        fontSize: "16px",
-                        background: "linear-gradient(135deg, #667eea,rgb(219, 205, 233))",
-                    }}
-                >
-                    {isLogin ? "Login" : "Sign Up"}
-                </Button>
-
-                {/* Switch */}
-                <Typography
-                    mt={3}
-                    sx={{ cursor: "pointer", fontSize: "14px" }}
-                    onClick={() => setIsLogin(!isLogin)}
-                >
-                    {isLogin
-                        ? "Don't have an account? Sign Up"
-                        : "Already have an account? Login"}
-                </Typography>
-
-                {/* Message */}
-                {message && (
-                    <Typography mt={2} color="error">
-                        {message}
-                    </Typography>
-                )}
-            </Paper>
-        </Box>
-    );
+        {message && <p className="form-error">{message}</p>}
+      </div>
+    </section>
+  );
 };
 
 export default AuthPage;

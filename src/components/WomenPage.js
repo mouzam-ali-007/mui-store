@@ -1,54 +1,29 @@
-import React, { useState } from "react";
-import { Box, Button, LinearProgress } from "@mui/material";
-import ArrowBackIcon from "@mui/icons-material/ArrowBack";
-import { useNavigate } from "react-router-dom";
-
+import React from "react";
+import { Link } from "react-router-dom";
 import Home from "../pages/Home";
+import { ArrowLeftIcon } from "./Icons";
 
 const WomenPage = () => {
-    const navigate = useNavigate();
+  return (
+    <section className="page-section">
+      <div className="subpage-hero">
+        <Link className="button button--ghost" to="/">
+          <ArrowLeftIcon className="button__icon" />
+          Back
+        </Link>
+        <p className="section-label">Women</p>
+        <h1>Soft structure, polished finishes, and statement silhouettes.</h1>
+        <p>Explore the women’s collection with a cleaner editorial presentation built in plain HTML and CSS.</p>
+      </div>
 
-    const [loading, setLoading] = useState(true);
-
-    // simulate API call (replace with real one)
-    React.useEffect(() => {
-        const timer = setTimeout(() => {
-            setLoading(false);
-        }, 1500);
-
-        return () => clearTimeout(timer);
-    }, []);
-
-    return (
-        <>
-            {/* TOP LOADING BAR */}
-            {loading && (
-                <LinearProgress
-                    sx={{
-                        position: "fixed",
-                        top: 0,
-                        left: 0,
-                        width: "100%",
-                        zIndex: 2000,
-                    }}
-                />
-            )}
-
-            <Box sx={{ mt: 10, px: 2 }}>
-                {/* BACK BUTTON */}
-                <Button
-                    onClick={() => navigate(-1)}
-                    startIcon={<ArrowBackIcon />}
-                    sx={{ mb: 2 }}
-                >
-                    Back
-                </Button>
-
-                {/* 👇 SHOW FILTER ONLY AFTER LOADING */}
-                {!loading && <Home />}
-            </Box>
-        </>
-    );
+      <Home
+        forcedCategory="women"
+        pageTitle="Women's Collection"
+        pageDescription="A focused edit of refined bags and elevated everyday pieces."
+        showBestCollection={false}
+      />
+    </section>
+  );
 };
 
 export default WomenPage;
